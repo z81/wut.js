@@ -1,0 +1,16 @@
+{
+  "name": "grp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --inline --watch --hot --debug --port 7575"
+  },
+  "dependencies": {
+    "global": "^4.3.2",
+    "stats.js": "^0.17.0",
+    "ts-loader": "^2.3.1",
+    "typescript": "^2.4.2",
+    "webpack": "^3.3.0"
+  }
+}
