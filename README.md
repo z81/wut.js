@@ -1,0 +1,1 @@
+# Installgit clone https://github.com/z81/wut.js.git && cd wut.js && yarn install && npm startopen [http://localhost:7575](http://localhost:7575)
