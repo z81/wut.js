@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": [ "dom" , "es7", "es2015", "ScriptHost", "es5", "es6"]
   }
 }

@@ -1,36 +1,54 @@
 import Stats from 'stats.js/src/Stats';
-import CanvasRenderer from './src/Renderer/CanvasRenderer';
-import { Circle } from './src/Elements';
+import GraphicEngine from './src';
+import { Circle, Text, Group } from './src/Elements';
+import { Draggable } from './src/Plugins';
 
 
 
-/*const stats = new Stats();
+const stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 stats.dom.style.left = 'inherit';
 stats.dom.style.right = '0';
-document.body.appendChild( stats.dom );*/
+document.body.appendChild( stats.dom );
 
 
 const rootNode = document.getElementById('app');
 
 
 
-const renderer = new CanvasRenderer(rootNode);
+const renderer = GraphicEngine.init('canvas');
+renderer.appendTo(rootNode);
 renderer.setSize(1000, 900);
 
 
 // generate
 const circleList = new Map();
+const textList = new Map();
+const groupList = new Map();
 
 const cols = 15;
 const rows = 10;
 for(let i = 1; i <= cols * rows; i++) {
-    const circle = new Circle();
     const x = (i % cols) * 60 + 40;
     const y = 60 * Math.ceil(i / cols);
 
+    const circle = new Circle();
+    const text = new Text();
+    const group = new Group();
+    group.add(circle);
+    group.add(text);
+    Draggable(group);
+
+    text.text = `${i}`;
+    text.background = '#fff';
+    text.moveTo(x + 3, y + 3);
+
     circle.moveTo(x, y);
+    circle.on('click', () => console.log('click', circle.x, circle.y));
+
     circleList.set(i, circle);
+    textList.set(i, text);
+    groupList.set(i, group);
 }
 
 const mousePos = [0, 0];
@@ -42,7 +60,7 @@ const getTimeColor = timestamp => {
 
 
 const render = timestamp => {
-    //stats.begin();
+    stats.begin();
     renderer.clear();
 
     circleList.forEach((circle, i) => {
@@ -54,10 +72,19 @@ const render = timestamp => {
             circle.radius += 10;
         }
 
-        renderer.draw(circle);
+        //renderer.draw(circle);
     });
 
-    //stats.end();
+
+    groupList.forEach((group, i) => {
+        renderer.draw(group);
+    });
+
+    /*textList.forEach((text, i) => {
+        renderer.draw(text);
+    });*/
+
+    stats.end();
     //requestAnimationFrame(render);
 };
 

@@ -1,15 +1,12 @@
-export default class CanvasRenderer {
+import CanvasEventsListener from './CanvasEventsListener';
+
+export default class CanvasAdapter {
     private elementNode = null;
     private canvasNode = null;
     private ctx = null;
+    private cache = [];
+    private eventListener;
     public antiAliasing: boolean = false;
-
-    constructor(element) {
-        this.setRootNode(element);
-        this.createCanvas();
-        this.initContext();
-        this.autoSize();
-    }
 
 
     private createCanvas() {
@@ -23,8 +20,13 @@ export default class CanvasRenderer {
     }
 
 
-    setRootNode(elementNode: HTMLElement) {
+    appendTo(elementNode: HTMLElement) {
         this.elementNode = elementNode;
+
+        this.createCanvas();
+        this.initContext();
+        this.autoSize();
+        this.eventListener = new CanvasEventsListener(this.canvasNode, this.cache);
         return this;
     }
 
@@ -44,10 +46,20 @@ export default class CanvasRenderer {
 
 
     draw(element) {
+        this.cache.push(element);
 
         switch (element.type) {
-            case 'circle': this.drawCircle(element);
+            case 'circle': return this.drawCircle(element);
+            case 'text': return this.drawText(element);
+            case 'group': return element.children.forEach(this.draw, this);
         }
+    }
+
+
+    drawText({ x, y, text, background, font }) {
+        this.ctx.font = font;
+        this.ctx.fillStyle = background;
+        this.ctx.fillText(text, x, y);
     }
 
 
@@ -74,6 +86,7 @@ export default class CanvasRenderer {
     }
 
     clear() {
+        this.cache.length = 0;
         this.ctx.clearRect(0, 0, this.canvasNode.width, this.canvasNode.height);
     }
 }
