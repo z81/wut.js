@@ -41,6 +41,8 @@ for(let i = 1; i <= cols * rows; i++) {
 
     text.text = `${i}`;
     text.background = '#fff';
+    text.align = 'center';
+    text.fontSize = 20;
     text.moveTo(x + 3, y + 3);
 
     circle.moveTo(x, y);
@@ -72,20 +74,20 @@ const render = timestamp => {
             circle.radius += 10;
         }
 
-        //renderer.draw(circle);
+        const text = textList.get(i);
+
+        text.fontSize = circle.radius;
+        text.x = circle.x - circle.radius;
+        text.y = circle.y;
     });
 
 
-    groupList.forEach((group, i) => {
-        renderer.draw(group);
-    });
+    groupList.forEach(renderer.draw, renderer);
 
-    /*textList.forEach((text, i) => {
-        renderer.draw(text);
-    });*/
+
 
     stats.end();
-    //requestAnimationFrame(render);
+    requestAnimationFrame(render);
 };
 
 document.addEventListener('mousemove', e => {
@@ -93,10 +95,11 @@ document.addEventListener('mousemove', e => {
     mousePos[1] = e.clientY;
 });
 
-setInterval(() => {
+
+/*setInterval(() => {
     render(Date.now());
-}, 1000 / 30);
+}, 1000 / 30);*/
 
 
-//requestAnimationFrame(render);
+requestAnimationFrame(render);
 

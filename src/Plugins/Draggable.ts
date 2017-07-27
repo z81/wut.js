@@ -50,15 +50,8 @@ document.addEventListener('mousemove', e => {
 
 
 export function Draggable(element) {
-    element.on('mousedown', e => {
-        console.log('start drag')
-        startDrag(element, e);
-    });
-
-    element.on('mouseup', () => {
-        stopDrag(element);
-    });
-
+    element.on('mousedown', startDrag.bind(this, element));
+    element.on('mouseup', stopDrag.bind(this, element));
 }
 
 export default Draggable;

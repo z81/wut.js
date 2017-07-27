@@ -7,9 +7,5 @@ export class Group extends ElementBase {
         this.children.push(element);
     }
 
-    getChildren() {
-        return this.children;
-    }
-
     public type: String = 'group';
 }

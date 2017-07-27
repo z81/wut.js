@@ -56,7 +56,16 @@ export default class CanvasAdapter {
     }
 
 
-    drawText({ x, y, text, background, font }) {
+    drawText({ x, y, text, background, font, fontSize, align }) {
+        if (align) {
+            const textSize = this.ctx.measureText(text);
+
+            if (align === 'center') {
+                x += textSize.width / 2;
+                y += fontSize / 2;
+            }
+        }
+
         this.ctx.font = font;
         this.ctx.fillStyle = background;
         this.ctx.fillText(text, x, y);
@@ -68,7 +77,6 @@ export default class CanvasAdapter {
             x += .5;
             y += .5;
         }
-
 
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2, false);
