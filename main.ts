@@ -1,7 +1,7 @@
 import Stats from 'stats.js/src/Stats';
 import GraphicEngine from './src';
-import { Circle, Text, Group } from './src/Elements';
-import { Draggable } from './src/Plugins';
+import { Circle, Text, Group, Rect } from './src/Elements';
+import { Draggable, Resizable } from './src/Plugins';
 
 
 
@@ -25,8 +25,9 @@ renderer.setSize(1000, 900);
 const circleList = new Map();
 const textList = new Map();
 const groupList = new Map();
+const frozenElements = new Set();
 
-const cols = 15;
+const cols = 10;
 const rows = 10;
 for(let i = 1; i <= cols * rows; i++) {
     const x = (i % cols) * 60 + 40;
@@ -40,17 +41,38 @@ for(let i = 1; i <= cols * rows; i++) {
     Draggable(group);
 
     text.text = `${i}`;
-    text.background = '#fff';
     text.align = 'center';
     text.fontSize = 20;
     text.moveTo(x + 3, y + 3);
 
     circle.moveTo(x, y);
-    circle.on('click', () => console.log('click', circle.x, circle.y));
+    circle.on('click', () => {
+        if (frozenElements.has(circle)) {
+            frozenElements.delete(circle);
+        }
+        else {
+            frozenElements.add(circle);
+        }
+    });
 
     circleList.set(i, circle);
     textList.set(i, text);
     groupList.set(i, group);
+}
+
+
+for(let x = 1; x <= 2; x++) {
+    for(let y = 1; y <= 2; y++) {
+        const rect = new Rect();
+        rect.x = 600 + x * 80;
+        rect.y = 50 + y * 80;
+        rect.width = 50;
+        rect.height = 50;
+        rect.background = '#faa';
+        Draggable(rect);
+        Resizable(rect);
+        groupList.set('r' + x + y, rect);
+    }
 }
 
 const mousePos = [0, 0];
@@ -66,6 +88,8 @@ const render = timestamp => {
     renderer.clear();
 
     circleList.forEach((circle, i) => {
+        if (frozenElements.has(circle)) return;
+
         const radius = (Math.sin(timestamp / 1000 + i) + 1) * 10 + 10;
         circle.background = getTimeColor(timestamp + i * 1000);
         circle.radius = Math.round(radius);
@@ -87,7 +111,7 @@ const render = timestamp => {
 
 
     stats.end();
-    requestAnimationFrame(render);
+    //requestAnimationFrame(render);
 };
 
 document.addEventListener('mousemove', e => {
@@ -96,10 +120,10 @@ document.addEventListener('mousemove', e => {
 });
 
 
-/*setInterval(() => {
+setInterval(() => {
     render(Date.now());
-}, 1000 / 30);*/
+}, 1000 / 30);
 
 
-requestAnimationFrame(render);
+//requestAnimationFrame(render);
 

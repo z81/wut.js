@@ -6,7 +6,7 @@ export class Text extends ElementBase {
     }
 
     set fontName(value: string) {
-        this.font = `${this.fontSize}px ${value}`;
+        this.font = this.buildFont(this._fontSize, value);
         this._fontName = value;
     }
 
@@ -15,8 +15,12 @@ export class Text extends ElementBase {
     }
 
     set fontSize(value: number) {
-        this.font = `${value}px ${this.fontName}`;
+        this.font = this.buildFont(value, this._fontName);
         this._fontSize = value;
+    }
+
+    private buildFont(fontSize: number, fontName: string) {
+        return `${fontSize}px ${fontName}`;
     }
 
     public text: string = '';
@@ -25,4 +29,5 @@ export class Text extends ElementBase {
     private _fontSize: number = 14;
     private _fontName: string = 'Georgia';
     public align: string = '';
+    public color:string = '#fff';
 }

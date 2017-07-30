@@ -1,4 +1,5 @@
 import CanvasEventsListener from './CanvasEventsListener';
+import EventListener from '../../EventListener';
 
 export default class CanvasAdapter {
     private elementNode = null;
@@ -27,7 +28,19 @@ export default class CanvasAdapter {
         this.initContext();
         this.autoSize();
         this.eventListener = new CanvasEventsListener(this.canvasNode, this.cache);
+        this.bindEvents();
         return this;
+    }
+
+
+    private bindEvents() {
+        EventListener.on('mouseenter', (event, element) => {
+           this.setCursor(element.cursor);
+        });
+
+        EventListener.on('mouseleave', (event, element) => {
+            this.setCursor(element.cursor);
+        });
     }
 
 
@@ -45,18 +58,45 @@ export default class CanvasAdapter {
     }
 
 
-    draw(element) {
+    setCursor(cursor: string) {
+        this.canvasNode.style.cursor = cursor;
+    }
+
+
+    draw(element, i) {
         this.cache.push(element);
 
         switch (element.type) {
             case 'circle': return this.drawCircle(element);
             case 'text': return this.drawText(element);
+            case 'rect': return this.drawRect(element);
             case 'group': return element.children.forEach(this.draw, this);
         }
     }
 
 
-    drawText({ x, y, text, background, font, fontSize, align }) {
+    drawRect({ x, y, background, borderColor, width, height }) {
+        if (!this.antiAliasing) {
+            x += .5;
+            y += .5;
+        }
+
+        this.ctx.beginPath();
+        this.ctx.rect(x, y, width, height);
+
+        if (background !== '') {
+            this.ctx.fillStyle = background;
+            this.ctx.fill();
+        }
+
+        if (borderColor !== '') {
+            this.ctx.strokeStyle = borderColor;
+            this.ctx.storke();
+        }
+    }
+
+
+    drawText({ x, y, text, color, font, fontSize, align }) {
         if (align) {
             const textSize = this.ctx.measureText(text);
 
@@ -67,7 +107,7 @@ export default class CanvasAdapter {
         }
 
         this.ctx.font = font;
-        this.ctx.fillStyle = background;
+        this.ctx.fillStyle = color;
         this.ctx.fillText(text, x, y);
     }
 
@@ -77,6 +117,7 @@ export default class CanvasAdapter {
             x += .5;
             y += .5;
         }
+
 
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2, false);
@@ -91,6 +132,7 @@ export default class CanvasAdapter {
             this.ctx.strokeStyle = borderColor;
             this.ctx.storke();
         }
+        this.ctx.closePath();
     }
 
     clear() {
