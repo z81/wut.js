@@ -69,8 +69,8 @@ for(let x = 1; x <= 2; x++) {
         rect.width = 50;
         rect.height = 50;
         rect.background = '#faa';
-        Draggable(rect);
         Resizable(rect);
+        Draggable(rect);
         groupList.set('r' + x + y, rect);
     }
 }

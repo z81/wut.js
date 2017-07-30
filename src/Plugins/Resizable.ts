@@ -13,6 +13,37 @@ let resizeDirection = DIRECTION.NONE;
 let resizeStartPosition = [];
 
 
+document.addEventListener('mouseup', () => {
+    resizableElement = null;
+}, false);
+
+
+document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
+    if (resizableElement !== null) {
+        const [x, y] = resizeStartPosition;
+
+        if (resizeDirection & DIRECTION.RIGHT) {
+            resizableElement.width += offsetX - x;
+        }
+        else if (resizeDirection & DIRECTION.LEFT) {
+            resizableElement.x += offsetX - x;
+            resizableElement.width += x - offsetX;
+        }
+        if (resizeDirection & DIRECTION.BOTTOM) {
+            resizableElement.height += offsetY - y;
+        }
+        else if (resizeDirection & DIRECTION.TOP) {
+            resizableElement.y += offsetY - y;
+            resizableElement.height += y - offsetY;
+        }
+
+        resizeStartPosition[0] = offsetX;
+        resizeStartPosition[1] = offsetY;
+        return;
+    }
+}, false);
+
+
 const getDirection = ({ width, height, x, y, type }, cursorX, cursorY) => {
     let direction = DIRECTION.NONE;
     if (type === 'rect') {
@@ -48,14 +79,7 @@ export function Resizable(element) {
     });
 
     element.on('mousemove', ({ offsetX, offsetY }) => {
-        if (resizableElement !== null) {
-            if (resizeDirection & DIRECTION.LEFT || resizeDirection & DIRECTION.RIGHT) {
-                element.x += offsetX - resizeStartPosition[0];
-                resizeStartPosition[0] = offsetX;
-            }
-
-            return;
-        }
+        if (resizableElement !== null) return;
 
         const direction = getDirection(element, offsetX, offsetY);
         let cursor = '';
