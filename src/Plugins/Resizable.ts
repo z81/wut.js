@@ -1,10 +1,13 @@
 const resizingElements = new Set();
+const resizeAreaSize = 10;
+
 
 
 const isResizeHandler = (element, x, y) => {
-
+    let direction = '';
     if (element.type === 'rect') {
-        return (x > element.x + element.width - 10 && x < element.x + element.width);
+
+        return (x > element.x + element.width - resizeAreaSize && x < element.x + element.width);
     }
 
     return false;
@@ -12,8 +15,8 @@ const isResizeHandler = (element, x, y) => {
 
 
 export function Resizable(element) {
-    /*element.on('mousemove', (e) => {
-        if (isResizeHandler(element, e.clientX, e.clientY)) {
+    element.on('mousemove', (e) => {
+        if (isResizeHandler(element, e.offsetX, e.offsetY)) {
             element.cursor = 'pointer';
         }
         else {
@@ -21,16 +24,10 @@ export function Resizable(element) {
         }
 
         console.log(element.cursor);
-    });*/
-
-    element.on('mouseenter', (e) => {
-        element.cursor = 'pointer';
-        console.log('e')
     });
 
     element.on('mouseleave', (e) => {
         element.cursor = '';
-        console.log('l')
     });
 }
 

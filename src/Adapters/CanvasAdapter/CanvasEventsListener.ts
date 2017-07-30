@@ -55,7 +55,7 @@ class CanvasEventsListener {
                 continue;
             }
 
-            if (this.xray(element, event.clientX, event.clientY)) {
+            if (this.xray(element, event.offsetX, event.offsetY)) {
                 this.fireEvent(eventName, event, element);
                 return true;
             }

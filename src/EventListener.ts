@@ -1,12 +1,17 @@
 class EventListener {
     private static eventListeners = new Map();
 
-    static on(eventName: string, callback: Function) {
+    static on(eventName: string, callback: Function, toFirst: boolean = true) {
         if (!this.eventListeners.has(eventName)) {
-            this.eventListeners.set(eventName, new Set());
+            this.eventListeners.set(eventName, []);
         }
 
-        this.eventListeners.get(eventName).add(callback);
+        if (toFirst) {
+            this.eventListeners.get(eventName).unshift(callback);
+        }
+        else {
+            this.eventListeners.get(eventName).push(callback);
+        }
         return this;
     }
 

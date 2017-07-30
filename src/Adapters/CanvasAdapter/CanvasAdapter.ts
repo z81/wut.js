@@ -34,7 +34,7 @@ export default class CanvasAdapter {
 
 
     private bindEvents() {
-        EventListener.on('mouseenter', (event, element) => {
+        EventListener.on('mousemove', (event, element) => {
            this.setCursor(element.cursor);
         });
 
