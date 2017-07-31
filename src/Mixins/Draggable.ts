@@ -1,3 +1,5 @@
+import MixinBase from './MixinBase';
+
 const draggedElements = new Set();
 const startDragPositions = new Map();
 
@@ -38,6 +40,8 @@ const drag = (element, e) => {
 
 document.addEventListener('mousemove', e => {
     draggedElements.forEach(element => {
+        if (!element.mixins.draggable.isEnabled) return;
+
         if (e.buttons === 0) {
             draggedElements.delete(element);
         }
@@ -49,9 +53,12 @@ document.addEventListener('mousemove', e => {
 });
 
 
-export function Draggable(element) {
-    element.on('mousedown', startDrag.bind(this, element));
-    element.on('mouseup', stopDrag.bind(this, element));
+export class Draggable extends MixinBase {
+    constructor(element) {
+        super();
+        element.on('mousedown', startDrag.bind(this, element));
+        element.on('mouseup', stopDrag.bind(this, element));
+    }
 }
 
 export default Draggable;

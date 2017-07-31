@@ -1,7 +1,7 @@
 import Stats from 'stats.js/src/Stats';
 import GraphicEngine from './src';
 import { Circle, Text, Group, Rect } from './src/Elements';
-import { Draggable, Resizable } from './src/Plugins';
+import { Draggable, Resizable } from './src/Mixins';
 
 
 
@@ -38,7 +38,7 @@ for(let i = 1; i <= cols * rows; i++) {
     const group = new Group();
     group.add(circle);
     group.add(text);
-    Draggable(group);
+    group.use(Draggable);
 
     text.text = `${i}`;
     text.align = 'center';
@@ -69,8 +69,8 @@ for(let x = 1; x <= 2; x++) {
         rect.width = 50;
         rect.height = 50;
         rect.background = '#faa';
-        Resizable(rect);
-        Draggable(rect);
+        rect.use(Resizable);
+        rect.use(Draggable);
         groupList.set('r' + x + y, rect);
     }
 }

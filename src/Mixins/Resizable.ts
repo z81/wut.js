@@ -1,3 +1,6 @@
+import MixinBase from './MixinBase';
+
+
 const resizeAreaSize = 10;
 
 const DIRECTION = {
@@ -14,6 +17,10 @@ let resizeStartPosition = [];
 
 
 document.addEventListener('mouseup', () => {
+    if (resizableElement !== null && resizableElement.mixins.draggable) {
+        resizableElement.mixins.draggable.enable();
+    }
+
     resizableElement = null;
 }, false);
 
@@ -66,41 +73,49 @@ const getDirection = ({ width, height, x, y, type }, cursorX, cursorY) => {
 };
 
 
-export function Resizable(element) {
+export class Resizable extends MixinBase {
+    constructor(element) {
+        super();
+        element.on('mousedown', e => {
+            const direction = getDirection(element, e.offsetX, e.offsetY);
 
-    element.on('mousedown', e => {
-        const direction = getDirection(element, e.offsetX, e.offsetY);
+            if (e.buttons > 0 && direction !== DIRECTION.NONE) {
+                if (element.mixins.draggable) {
+                    element.mixins.draggable.disable();
+                }
 
-        if (e.buttons > 0 && direction !== DIRECTION.NONE) {
-            resizeDirection = direction;
-            resizableElement = element;
-            resizeStartPosition = [e.offsetX, e.offsetY];
-        }
-    });
+                resizeDirection = direction;
+                resizableElement = element;
+                resizeStartPosition = [e.offsetX, e.offsetY];
+            }
+        });
 
-    element.on('mousemove', ({ offsetX, offsetY }) => {
-        if (resizableElement !== null) return;
+        element.on('mousemove', ({ offsetX, offsetY }) => {
+            if (resizableElement !== null) return;
 
-        const direction = getDirection(element, offsetX, offsetY);
-        let cursor = '';
+            const direction = getDirection(element, offsetX, offsetY);
+            let cursor = '';
 
-        if (direction & DIRECTION.LEFT) cursor = 'w-resize';
-        if (direction & DIRECTION.RIGHT) cursor = 'w-resize';
-        if (direction & DIRECTION.TOP) cursor = 's-resize';
-        if (direction & DIRECTION.BOTTOM) cursor = 's-resize';
+            if (direction & DIRECTION.LEFT) cursor = 'w-resize';
+            if (direction & DIRECTION.RIGHT) cursor = 'w-resize';
+            if (direction & DIRECTION.TOP) cursor = 's-resize';
+            if (direction & DIRECTION.BOTTOM) cursor = 's-resize';
 
 
-        if (direction === DIRECTION.BOTTOM + DIRECTION.LEFT) cursor = 'nesw-resize';
-        if (direction === DIRECTION.BOTTOM + DIRECTION.RIGHT) cursor = 'nwse-resize';
-        if (direction === DIRECTION.TOP + DIRECTION.LEFT) cursor = 'nwse-resize';
-        if (direction === DIRECTION.TOP + DIRECTION.RIGHT) cursor = 'nesw-resize';
+            if (direction === DIRECTION.BOTTOM + DIRECTION.LEFT) cursor = 'nesw-resize';
+            if (direction === DIRECTION.BOTTOM + DIRECTION.RIGHT) cursor = 'nwse-resize';
+            if (direction === DIRECTION.TOP + DIRECTION.LEFT) cursor = 'nwse-resize';
+            if (direction === DIRECTION.TOP + DIRECTION.RIGHT) cursor = 'nesw-resize';
 
-        element.cursor = cursor
-    });
+            element.cursor = cursor
+        });
 
-    element.on('mouseleave', (e) => {
-        element.cursor = '';
-    });
+        element.on('mouseleave', (e) => {
+            element.cursor = '';
+        });
+    }
+
 }
+
 
 export default Resizable;
