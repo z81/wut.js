@@ -1,7 +1,7 @@
 import Stats from 'stats.js/src/Stats';
 import GraphicEngine from './src';
 import { Circle, Text, Group, Rect } from './src/Elements';
-import { Draggable, Resizable } from './src/Mixins';
+import { Draggable, Resizable } from './src/Plugins';
 
 
 
