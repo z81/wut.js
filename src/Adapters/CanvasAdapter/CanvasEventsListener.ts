@@ -43,7 +43,7 @@ class CanvasEventsListener {
         EventListener.fire(eventName, event, element);
     }
 
-    eventHandler(eventName, event, root = this.cache, noEvent = false) {
+    eventHandler(eventName, event, root = this.cache, isGroup = false) {
         const elementsOnCursor = [];
 
         for(let element of root) {
@@ -62,19 +62,19 @@ class CanvasEventsListener {
             }
         }
 
-        let topElementOnCursor = null;
+        event.canvasTarget = null;
         for(let i = 0; i < elementsOnCursor.length; i++) {
-            if (topElementOnCursor === null || topElementOnCursor.z < elementsOnCursor[i].z) {
-                topElementOnCursor = elementsOnCursor[i];
+            if (event.canvasTarget === null || event.canvasTarget.z < elementsOnCursor[i].z) {
+                event.canvasTarget = elementsOnCursor[i];
             }
         }
 
-        if (topElementOnCursor !== null) {
-            if (noEvent) {
+        if (event.canvasTarget !== null) {
+            if (isGroup) {
                 return true;
             }
             else {
-                this.fireEvent(eventName, event, topElementOnCursor);
+                this.fireEvent(eventName, event, event.canvasTarget);
             }
         }
 

@@ -16,6 +16,17 @@ let resizeDirection = DIRECTION.NONE;
 let resizeStartPosition = [];
 
 
+const changeOffsetSize = (element, offsetX, offsetY) => {
+    console.log(element, offsetX, offsetY);
+    if (element.type === 'group') {
+        element.children.forEach(el => changeOffsetSize(el, offsetX, offsetY));
+        return;
+    }
+
+    element.width += offsetX;
+    element.height += offsetY;
+};
+
 document.addEventListener('mouseup', () => {
     if (resizableElement !== null && resizableElement.mixins.draggable) {
         resizableElement.mixins.draggable.enable();
@@ -30,18 +41,16 @@ document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
         const [x, y] = resizeStartPosition;
 
         if (resizeDirection & DIRECTION.RIGHT) {
-            resizableElement.width += offsetX - x;
+            changeOffsetSize(resizableElement, offsetX - x, 0);
         }
         else if (resizeDirection & DIRECTION.LEFT) {
-            resizableElement.x += offsetX - x;
-            resizableElement.width += x - offsetX;
+            changeOffsetSize(resizableElement, offsetX - x, x - offsetX);
         }
         if (resizeDirection & DIRECTION.BOTTOM) {
-            resizableElement.height += offsetY - y;
+            changeOffsetSize(resizableElement, 0, offsetY - y);
         }
         else if (resizeDirection & DIRECTION.TOP) {
-            resizableElement.y += offsetY - y;
-            resizableElement.height += y - offsetY;
+            changeOffsetSize(resizableElement, offsetY - y, y - offsetY);
         }
 
         resizeStartPosition[0] = offsetX;
@@ -51,8 +60,9 @@ document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
 }, false);
 
 
-const getDirection = ({ width, height, x, y, type }, cursorX, cursorY) => {
+const getDirection = ({ width, height, x, y, type, children }, cursorX, cursorY) => {
     let direction = DIRECTION.NONE;
+
     if (type === 'rect') {
         if (cursorX >= (x + width - resizeAreaSize) && cursorX <= x + width) {
             direction |= DIRECTION.RIGHT;
@@ -77,7 +87,7 @@ export class Resizable extends MixinBase {
     constructor(element) {
         super();
         element.on('mousedown', e => {
-            const direction = getDirection(element, e.offsetX, e.offsetY);
+            const direction = getDirection(e.canvasTarget, e.offsetX, e.offsetY);
 
             if (e.buttons > 0 && direction !== DIRECTION.NONE) {
                 if (element.mixins.draggable) {
@@ -90,10 +100,10 @@ export class Resizable extends MixinBase {
             }
         });
 
-        element.on('mousemove', ({ offsetX, offsetY }) => {
+        element.on('mousemove', ({ offsetX, offsetY, canvasTarget }) => {
             if (resizableElement !== null) return;
 
-            const direction = getDirection(element, offsetX, offsetY);
+            const direction = getDirection(canvasTarget, offsetX, offsetY);
             let cursor = '';
 
             if (direction & DIRECTION.LEFT) cursor = 'w-resize';
