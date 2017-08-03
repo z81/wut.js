@@ -4,6 +4,7 @@ import EventListener from '../EventListener';
 export default class ElementBase {
     public x: Number = 0;
     public y: Number = 0;
+    public z: Number = 0;
     public lineWidth: Number = 1;
     public borderColor:String = '';
     public background:String = '';

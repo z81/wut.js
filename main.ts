@@ -65,7 +65,8 @@ for(let x = 1; x <= 2; x++) {
     for(let y = 1; y <= 2; y++) {
         const rect = new Rect();
         rect.x = 600 + x * 80;
-        rect.y = 50 + y * 80;
+        rect.y = 50 + y * 80
+        rect.z = 1;
         rect.width = 50;
         rect.height = 50;
         rect.background = '#faa';

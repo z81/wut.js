@@ -43,24 +43,40 @@ class CanvasEventsListener {
         EventListener.fire(eventName, event, element);
     }
 
-    eventHandler(eventName, event, root = this.cache) {
+    eventHandler(eventName, event, root = this.cache, noEvent = false) {
+        const elementsOnCursor = [];
+
         for(let element of root) {
 
             if (element.type === 'group') {
-                if (this.eventHandler(eventName, event, element.children)) {
-                    this.fireEvent(eventName, event, element);
-                    return true;
+                if (this.eventHandler(eventName, event, element.children, true)) {
+                    //this.fireEvent(eventName, event, element);
+                    elementsOnCursor.push(element);
                 }
-
                 continue;
             }
 
             if (this.xray(element, event.offsetX, event.offsetY)) {
-                this.fireEvent(eventName, event, element);
-                return true;
+                //this.fireEvent(eventName, event, element);
+                elementsOnCursor.push(element);
             }
         }
 
+        let topElementOnCursor = null;
+        for(let i = 0; i < elementsOnCursor.length; i++) {
+            if (topElementOnCursor === null || topElementOnCursor.z < elementsOnCursor[i].z) {
+                topElementOnCursor = elementsOnCursor[i];
+            }
+        }
+
+        if (topElementOnCursor !== null) {
+            if (noEvent) {
+                return true;
+            }
+            else {
+                this.fireEvent(eventName, event, topElementOnCursor);
+            }
+        }
 
         if (this.prevTarget !== null) {
             EventListener.fire('mouseleave', event, this.prevTarget);
