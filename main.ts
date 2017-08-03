@@ -4,6 +4,12 @@ import { Circle, Text, Group, Rect } from './src/Elements';
 import { Draggable, Resizable } from './src/Plugins';
 
 
+const getTimeColor = timestamp => {
+    const color = Math.round((Math.sin(timestamp / 0xFF5) + 1) / 2 * 358);
+    return `hsl(${color}, 50%, 50%)`;
+};
+
+
 
 const stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -61,27 +67,40 @@ for(let i = 1; i <= cols * rows; i++) {
 }
 
 
+let id = 1;
 for(let x = 1; x <= 2; x++) {
     for(let y = 1; y <= 2; y++) {
+        const g = new Group();
+        g.z = 1;
         const rect = new Rect();
         rect.x = 600 + x * 80;
-        rect.y = 50 + y * 80
-        rect.z = 1;
+        rect.y = 50 + y * 80;
+
         rect.width = 50;
         rect.height = 50;
-        rect.background = '#faa';
-        rect.use(Resizable);
-        rect.use(Draggable);
-        groupList.set('r' + x + y, rect);
+        rect.background = getTimeColor((id + 1) * 3254);
+
+        const text = new Text();
+        text.fontSize = 25;
+        text.text = `${id}`;
+        text.align = 'center';
+        text.x = rect.x + 25;
+        text.y = rect.y + 24;
+
+        g
+            .add(rect)
+            .add(text)
+            .use(Resizable)
+            .use(Draggable);
+
+        groupList.set('r' + id, g);
+
+        id++;
     }
 }
 
 const mousePos = [0, 0];
 
-const getTimeColor = timestamp => {
-    const color = Math.round((Math.sin(timestamp / 0xFF5) + 1) / 2 * 358);
-    return `hsl(${color}, 50%, 50%)`;
-};
 
 
 const render = timestamp => {

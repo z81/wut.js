@@ -101,7 +101,7 @@ export default class CanvasAdapter {
             const textSize = this.ctx.measureText(text);
 
             if (align === 'center') {
-                x += textSize.width / 2;
+                x -= textSize.width / 2;
                 y += fontSize / 2;
             }
         }

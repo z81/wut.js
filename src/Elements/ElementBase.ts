@@ -2,8 +2,8 @@ import EventListener from '../EventListener';
 
 
 export default class ElementBase {
-    public x: Number = 0;
-    public y: Number = 0;
+    public x: number = 0;
+    public y: number = 0;
     public z: Number = 0;
     public lineWidth: Number = 1;
     public borderColor:String = '';
@@ -11,7 +11,7 @@ export default class ElementBase {
     public cursor:String = '';
     public readonly mixins = {};
 
-    moveTo(x: Number, y: Number) {
+    moveTo(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
