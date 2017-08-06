@@ -33,8 +33,8 @@ const textList = new Map();
 const groupList = new Map();
 const frozenElements = new Set();
 
-const cols = 10;
-const rows = 10;
+const cols = 1;
+const rows = 1;
 for(let i = 1; i <= cols * rows; i++) {
     const x = (i % cols) * 60 + 40;
     const y = 60 * Math.ceil(i / cols);
@@ -68,8 +68,8 @@ for(let i = 1; i <= cols * rows; i++) {
 
 
 let id = 1;
-for(let x = 1; x <= 2; x++) {
-    for(let y = 1; y <= 2; y++) {
+for(let x = 1; x <= 1; x++) {
+    for(let y = 1; y <= 1; y++) {
         const g = new Group();
         g.z = 1;
         const rect = new Rect();
@@ -79,6 +79,7 @@ for(let x = 1; x <= 2; x++) {
         rect.width = 50;
         rect.height = 50;
         rect.background = getTimeColor((id + 1) * 3254);
+        rect.use(Resizable);
 
         const text = new Text();
         text.fontSize = 25;
@@ -90,7 +91,6 @@ for(let x = 1; x <= 2; x++) {
         g
             .add(rect)
             .add(text)
-            .use(Resizable)
             .use(Draggable);
 
         groupList.set('r' + id, g);
@@ -121,7 +121,7 @@ const render = timestamp => {
         const text = textList.get(i);
 
         text.fontSize = circle.radius;
-        text.x = circle.x - circle.radius;
+        text.x = circle.x;
         text.y = circle.y;
     });
 

@@ -97,6 +97,10 @@ export default class CanvasAdapter {
 
 
     drawText({ x, y, text, color, font, fontSize, align }) {
+        this.ctx.beginPath();
+        this.ctx.font = font;
+        this.ctx.fillStyle = color;
+
         if (align) {
             const textSize = this.ctx.measureText(text);
 
@@ -106,8 +110,6 @@ export default class CanvasAdapter {
             }
         }
 
-        this.ctx.font = font;
-        this.ctx.fillStyle = color;
         this.ctx.fillText(text, x, y);
     }
 
