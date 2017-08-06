@@ -36,6 +36,7 @@ class CanvasEventsListener {
         }
 
         if (this.prevTarget !== element) {
+            console.log('mouseenter', this.prevTarget, element)
             EventListener.fire('mouseenter', event, element);
         }
 
@@ -43,7 +44,7 @@ class CanvasEventsListener {
         EventListener.fire(eventName, event, element);
 
         if (element.type === 'group') {
-            element.children.forEach(el => this.fireEvent(eventName, event, el));
+            element.children.forEach(el => EventListener.fire(eventName, event, el));
         }
     }
 
@@ -81,8 +82,8 @@ class CanvasEventsListener {
                 this.fireEvent(eventName, event, event.canvasTarget);
             }
         }
-
-        if (this.prevTarget !== null) {
+        else if (this.prevTarget !== null && !isGroup) {
+            event.canvasTarget = this.prevTarget;
             EventListener.fire('mouseleave', event, this.prevTarget);
             this.prevTarget = null;
         }

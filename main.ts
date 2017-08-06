@@ -1,5 +1,5 @@
 import Stats from 'stats.js/src/Stats';
-import GraphicEngine from './src';
+import { GraphicEngine, Animation } from './src';
 import { Circle, Text, Group, Rect } from './src/Elements';
 import { Draggable, Resizable } from './src/Plugins';
 
@@ -61,10 +61,26 @@ for(let i = 1; i <= cols * rows; i++) {
         }
     });
 
+
     circleList.set(i, circle);
     textList.set(i, text);
     groupList.set(i, group);
 }
+
+
+const circle = new Circle();
+circle.radius = 20;
+circle.background = '#5a0';
+circle.moveTo(700, 400);
+circle.on('mouseenter', Animation({
+    radius: '+15'
+}, 1500).end());
+circle.on('mouseleave', Animation({
+    radius: '-15'
+}, 1500).end());
+groupList.set('123', circle);
+
+
 
 
 let id = 1;
