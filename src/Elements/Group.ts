@@ -5,6 +5,7 @@ export class Group extends ElementBase {
 
     add(element) {
         this.children.push(element);
+        element.parent = this;
         return this;
     }
 

@@ -63,6 +63,16 @@ document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
 const getDirection = ({ width, height, x, y, type, children }, cursorX, cursorY) => {
     let direction = DIRECTION.NONE;
 
+    if (type === 'group') {
+        children.forEach(el => {
+            const direct = getDirection(el, cursorX, cursorY);
+            if (direct !== DIRECTION.NONE) {
+                direction = direct;
+            }
+        });
+    }
+
+
     if (type === 'rect') {
         if (cursorX >= (x + width - resizeAreaSize) && cursorX <= x + width) {
             direction |= DIRECTION.RIGHT;

@@ -41,6 +41,10 @@ class CanvasEventsListener {
 
         this.prevTarget = element;
         EventListener.fire(eventName, event, element);
+
+        if (element.type === 'group') {
+            element.children.forEach(el => this.fireEvent(eventName, event, el));
+        }
     }
 
     eventHandler(eventName, event, root = this.cache, isGroup = false) {

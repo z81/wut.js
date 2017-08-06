@@ -4,11 +4,12 @@ import EventListener from '../EventListener';
 export default class ElementBase {
     public x: number = 0;
     public y: number = 0;
-    public z: Number = 0;
-    public lineWidth: Number = 1;
-    public borderColor:String = '';
-    public background:String = '';
-    public cursor:String = '';
+    public z: number = 0;
+    public lineWidth: number = 1;
+    public borderColor: string = '';
+    public background: string = '';
+    public cursor: string = '';
+    private parent = null;
     public readonly mixins = {};
 
     moveTo(x: number, y: number) {
@@ -30,7 +31,7 @@ export default class ElementBase {
         EventListener.fire(eventName, event, target);
     }
 
-    // SOLID :(
+
     use(mixin) {
         const name = mixin.name.toLowerCase();
         this.mixins[name] = new mixin(this);
