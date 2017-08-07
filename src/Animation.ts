@@ -5,6 +5,7 @@ const ANIMATION_SPEED = {
 
 const PARSE_ANIMATION_VALUE_REGEXP = /([\+\-\=]?)(\d*\.?\d*)(px|%|)/i;
 
+const activeAnimations = new Map();
 
 class Step {
     private transofrms = [];
@@ -76,8 +77,16 @@ class AnimationCreator {
     private animationHandler({ canvasTarget }) {
         const fps = 60;
 
-        this.activeAnimations.forEach(id => clearInterval(id));
-        this.activeAnimations.length = 0;
+
+        if (!activeAnimations.has(canvasTarget)) {
+            activeAnimations.set(canvasTarget, []);
+        }
+
+        const animations = activeAnimations.get(canvasTarget);
+        animations.forEach(id => clearInterval(id));
+        animations.length = 0;
+
+
 
         this.steps.forEach(({ modificationType, actionType, valueFormat, attribute, value, time} ) => {
             let endValue = canvasTarget[attribute];
@@ -98,11 +107,10 @@ class AnimationCreator {
 
                 if (isAnimationCompleted) {
                     clearInterval(interval);
-                    this.activeAnimations.splice(activeAnimationId, 1);
+                    animations.splice(activeAnimationId, 1);
                 }
                 else {
                     if (modificationType === '+') {
-                        console.log('+', canvasTarget[attribute], endValue)
                         canvasTarget[attribute] += animationStepValue;
                     }
                     else {
@@ -111,11 +119,10 @@ class AnimationCreator {
                 }
             }, 1000 / fps);
 
-            activeAnimationId = this.activeAnimations.push(interval);
-
-            console.log(canvasTarget[attribute], endValue)
+            activeAnimationId = animations.push(interval);
         });
     }
+
 }
 
 
