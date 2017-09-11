@@ -10,24 +10,25 @@ const getTimeColor = timestamp => {
 };
 
 
-
+// STATS
 const stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 stats.dom.style.left = 'inherit';
 stats.dom.style.right = '0';
 document.body.appendChild( stats.dom );
+//
 
-
+// CRATE NODE
 const rootNode = document.getElementById('app');
 
 
-
+// INIT RENDERER
 const renderer = GraphicEngine.init('canvas');
 renderer.appendTo(rootNode);
 renderer.setSize(1000, 900);
 
 
-// generate
+// generate primitives
 const circleList = new Map();
 const textList = new Map();
 const groupList = new Map();
@@ -35,6 +36,7 @@ const frozenElements = new Set();
 
 const cols = 10;
 const rows = 10;
+// gen circle
 for(let i = 1; i <= cols * rows; i++) {
     const x = (i % cols) * 60 + 40;
     const y = 60 * Math.ceil(i / cols);
@@ -79,7 +81,7 @@ circle.on('mouseleave', Animation({
     radius: '-15'
 }, 1500).end());
 groupList.set('123', circle);
-
+//
 
 
 
@@ -118,7 +120,7 @@ for(let x = 1; x <= 2; x++) {
 const mousePos = [0, 0];
 
 
-
+// main render function
 const render = timestamp => {
     stats.begin();
     renderer.clear();

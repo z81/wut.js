@@ -1,5 +1,5 @@
 
-class MixinBase {
+class PluginBase {
     public isEnabled = true;
 
 
@@ -12,4 +12,4 @@ class MixinBase {
     }
 }
 
-export default MixinBase;
+export default PluginBase;
