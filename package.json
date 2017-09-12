@@ -7,6 +7,7 @@
     "start": "webpack-dev-server --inline --watch --hot --debug --port 7575"
   },
   "dependencies": {
+    "dat.gui": "^0.6.1",
     "global": "^4.3.2",
     "stats.js": "^0.17.0",
     "ts-loader": "^2.3.1",

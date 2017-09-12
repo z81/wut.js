@@ -1,8 +1,11 @@
 import Stats from 'stats.js/src/Stats';
 import { GraphicEngine } from './src';
 import circleDemo from './examples/circles';
+import animDemo from './examples/animation';
 import dragableResizableDemo from './examples/draggable_resiazable';
 
+
+let fps = 30;
 let selectedDemoIdx = 0;
 const demos = [
     {
@@ -12,6 +15,10 @@ const demos = [
     {
         name: 'Draggable Resizable',
         demo: dragableResizableDemo
+    },
+    {
+        name: 'Animation plugin',
+        demo: animDemo
     }
 ];
 
@@ -35,7 +42,9 @@ menu.innerHTML = demos.map(({ name }, idx) => (
 const stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 stats.dom.style.left = 'inherit';
+stats.dom.style.top = 'inherit';
 stats.dom.style.right = '0';
+stats.dom.style.bottom = '0';
 document.body.appendChild( stats.dom );
 //
 
@@ -46,9 +55,6 @@ const rootNode = document.getElementById('app');
 const renderer = GraphicEngine.init('canvas');
 renderer.appendTo(rootNode);
 renderer.setSize(1000, 900);
-
-
-
 
 
 // main render function
@@ -62,11 +68,24 @@ const render = timestamp => {
 };
 
 
-
-setInterval(() => {
+const createRenderTimer = ()=> setInterval(() => {
     render(Date.now());
-}, 1000 / 30);
+}, 1000 / fps);
 
 
+let thisRenderTimerIdx = createRenderTimer();
 //requestAnimationFrame(render);
 
+
+const FizzyText = function() {
+    this.maxFps = fps;
+};
+
+const text = new FizzyText();
+const gui = new window['dat'].GUI();
+
+gui.add(text, 'maxFps', 1, 100).onChange(function(value) {
+    fps = value;
+    clearInterval(thisRenderTimerIdx);
+    thisRenderTimerIdx = createRenderTimer();
+});
