@@ -16,15 +16,16 @@ let resizeDirection = DIRECTION.NONE;
 let resizeStartPosition = [];
 
 
-const changeOffsetSize = (element, offsetX, offsetY) => {
-    console.log(element, offsetX, offsetY);
+const changeOffsetSizeAndPos = (element, offsetWidth, offsetHeight, offsetX = 0, offsetY = 0) => {
     if (element.type === 'group') {
-        element.children.forEach(el => changeOffsetSize(el, offsetX, offsetY));
+        element.children.forEach(el => changeOffsetSizeAndPos(el, offsetWidth, offsetHeight, offsetX, offsetY));
         return;
     }
 
-    element.width += offsetX;
-    element.height += offsetY;
+    element.width += offsetWidth;
+    element.height += offsetHeight;
+    element.x += offsetX;
+    element.y += offsetY;
 };
 
 document.addEventListener('mouseup', () => {
@@ -41,16 +42,16 @@ document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
         const [x, y] = resizeStartPosition;
 
         if (resizeDirection & DIRECTION.RIGHT) {
-            changeOffsetSize(resizableElement, offsetX - x, 0);
+            changeOffsetSizeAndPos(resizableElement, offsetX - x, 0);
         }
         else if (resizeDirection & DIRECTION.LEFT) {
-            changeOffsetSize(resizableElement, offsetX - x, x - offsetX);
+            changeOffsetSizeAndPos(resizableElement, x - offsetX, 0, offsetX - x);
         }
         if (resizeDirection & DIRECTION.BOTTOM) {
-            changeOffsetSize(resizableElement, 0, offsetY - y);
+            changeOffsetSizeAndPos(resizableElement, 0, offsetY - y);
         }
         else if (resizeDirection & DIRECTION.TOP) {
-            changeOffsetSize(resizableElement, offsetY - y, y - offsetY);
+            changeOffsetSizeAndPos(resizableElement, 0, y - offsetY, 0, offsetY - y);
         }
 
         resizeStartPosition[0] = offsetX;
