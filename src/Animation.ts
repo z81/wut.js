@@ -1,131 +1,106 @@
+import animationTypes from "./AnimationTypes";
+
 const ANIMATION_SPEED = {
-    'slow': 1500,
-    'fast': 100
+  slow: 1500,
+  fast: 100
 };
 
-const PARSE_ANIMATION_VALUE_REGEXP = /([\+\-\=]?)(\d*\.?\d*)(px|%|)/i;
+const ANIMATION_FPS = 60;
 
 const activeAnimations = new Map();
 
-class Step {
-    private transofrms = [];
+const getAnimationTiming = (type, t, b, c, d) => {
+  if (animationTypes[type] === undefined) {
+    throw Error("Uncnown animation type");
+  }
 
-    constructor(config, time = 750) {
-        const keys = Object.keys(config);
-        keys.forEach(attribute => {
-            const actionType = 'attribute';
-            const attributeValue = config[attribute];
-            const [
-                _,
-                modificationType = '=',
-
-            ] = PARSE_ANIMATION_VALUE_REGEXP.exec(attributeValue);
-
-
-            /*this.transofrms.push({
-                modificationType,
-                actionType,
-                attribute,
-                value,
-                time
-            });*/
-        });
-    }
-}
-
+  return animationTypes[type](t, b, c, d);
+};
 
 class AnimationCreator {
-    private steps = [];
-    private activeAnimations = [];
+  private steps = [];
+  private activeAnimations = [];
 
-    constructor(callback, time) {
-        if (callback) {
-            this.step(callback, time);
-        }
+  constructor(callback, time) {
+    if (callback) {
+      this.step(callback, time);
     }
+  }
 
+  step(config, animationDuration) {
+    if (typeof config === "object") {
+      const keys = Object.keys(config);
+      keys.forEach(attribute => {
+        const actionType = "attribute";
+        const endValue = config[attribute];
+        const timingType = config.timing;
 
-    step(config, time) {
-        if (typeof config === 'object') {
-            const keys = Object.keys(config);
-            keys.forEach(attribute => {
-                const actionType = 'attribute';
-                const attributeValue = config[attribute];
-                const [
-                    _,
-                    modificationType = '=',
-                    value,
-                    valueFormat = 'px'
-                ] = PARSE_ANIMATION_VALUE_REGEXP.exec(attributeValue);
-
-                this.steps.push({
-                    modificationType,
-                    actionType,
-                    valueFormat,
-                    attribute,
-                    value,
-                    time
-                });
-            });
-        }
-    }
-
-    end() {
-        return this.animationHandler.bind(this);
-    }
-
-    private animationHandler({ canvasTarget }) {
-        const fps = 60;
-
-
-        if (!activeAnimations.has(canvasTarget)) {
-            activeAnimations.set(canvasTarget, []);
-        }
-
-        const animations = activeAnimations.get(canvasTarget);
-        animations.forEach(id => clearInterval(id));
-        animations.length = 0;
-
-
-
-        this.steps.forEach(({ modificationType, actionType, valueFormat, attribute, value, time} ) => {
-            let endValue = canvasTarget[attribute];
-            let animationStepValue = value / (time / fps);
-            if (modificationType === '+') endValue += parseInt(value);
-            if (modificationType === '-') endValue -= value;
-            if (modificationType === '=') {
-                endValue = value;
-                animationStepValue = (value - canvasTarget[attribute]) / (time / fps);
-            }
-
-            let activeAnimationId = 0;
-            const interval = setInterval(() => {
-                const isAnimationCompleted = (
-                    (canvasTarget[attribute] > endValue && modificationType === '+') ||
-                    (canvasTarget[attribute] <= endValue && modificationType === '-')
-                );
-
-                if (isAnimationCompleted) {
-                    clearInterval(interval);
-                    animations.splice(activeAnimationId, 1);
-                }
-                else {
-                    if (modificationType === '+') {
-                        canvasTarget[attribute] += animationStepValue;
-                    }
-                    else {
-                        canvasTarget[attribute] -= animationStepValue;
-                    }
-                }
-            }, 1000 / fps);
-
-            activeAnimationId = animations.push(interval);
+        this.steps.push({
+          actionType,
+          attribute,
+          endValue,
+          timingType,
+          animationDuration
         });
+      });
+    }
+  }
+
+  end() {
+    return this.animationHandler.bind(this);
+  }
+
+  stopAnimation(canvasTarget) {
+    const animations = activeAnimations.get(canvasTarget);
+    animations.forEach(id => clearInterval(id));
+    animations.length = 0;
+  }
+
+  private animationHandler({ canvasTarget }) {
+    if (!activeAnimations.has(canvasTarget)) {
+      activeAnimations.set(canvasTarget, []);
     }
 
+    this.stopAnimation(canvasTarget);
+    this.steps.forEach(this.animateStep.bind(this, canvasTarget));
+  }
+
+  private animateStep(canvasTarget, animationConfig) {
+    const animations = activeAnimations.get(canvasTarget);
+    const { attribute, endValue } = animationConfig;
+    animationConfig.startValue = canvasTarget[attribute];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      this.startAnimationTimer(canvasTarget, animationConfig, i);
+
+      i += 1000 / ANIMATION_FPS;
+    }, 1000 / ANIMATION_FPS);
+
+    animations.push(interval);
+  }
+
+  private startAnimationTimer(canvasTarget, animConfig, t) {
+    const { startValue, endValue, attribute, animationDuration } = animConfig;
+    const animationStepValue =
+      (endValue - startValue) / (animationDuration / ANIMATION_FPS);
+    const isAnimationCompleted =
+      (endValue >= startValue && canvasTarget[attribute] >= endValue) ||
+      (endValue <= startValue && canvasTarget[attribute] <= endValue);
+
+    if (isAnimationCompleted) {
+      this.stopAnimation(canvasTarget);
+    } else {
+      canvasTarget[attribute] = getAnimationTiming(
+        canvasTarget.aimationType,
+        t,
+        startValue,
+        endValue - startValue,
+        animationDuration
+      );
+    }
+  }
 }
-
-
 
 export const Animation = (config, delay) => new AnimationCreator(config, delay);
 
