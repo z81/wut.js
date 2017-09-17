@@ -11,7 +11,7 @@ const activeAnimations = new Map();
 
 const getAnimationTiming = (type, t, b, c, d) => {
   if (animationTypes[type] === undefined) {
-    throw Error("Uncnown animation type");
+    throw Error("Unknown animation type");
   }
 
   return animationTypes[type](t, b, c, d);

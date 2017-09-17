@@ -3,6 +3,7 @@ import { GraphicEngine } from "./src";
 import circleDemo from "./examples/circles";
 import animDemo from "./examples/animation";
 import dragableResizableDemo from "./examples/draggable_resiazable";
+import windowDemo from "./examples/window";
 
 let fps = 30;
 let selectedDemoIdx = 0;
@@ -18,6 +19,10 @@ const demos = [
   {
     name: "Animation plugin",
     demo: animDemo
+  },
+  {
+    name: "Window",
+    demo: windowDemo
   }
 ];
 

@@ -101,7 +101,6 @@ export default class CanvasAdapter {
 
     this.ctx.beginPath();
     this.ctx.font = font;
-    this.ctx.fillStyle = color;
 
     if (align) {
       const textSize = this.ctx.measureText(text);
@@ -113,6 +112,8 @@ export default class CanvasAdapter {
     }
 
     this.configureCanvas(config);
+
+    this.ctx.fillStyle = color;
     this.ctx.fillText(text, x, y);
   }
 
@@ -132,17 +133,20 @@ export default class CanvasAdapter {
     this.ctx.closePath();
   }
 
-  configureCanvas({ x, y, width, height, background, borderColor, lineWidth }) {
-    if (background !== "") {
-      this.ctx.fillStyle = background;
-    }
+  configureCanvas({
+    x,
+    y,
+    width,
+    height,
+    background,
+    borderColor,
+    borderSize
+  }) {
+    this.ctx.fillStyle = background;
+    this.ctx.strokeStyle = borderColor;
 
-    if (borderColor !== "") {
-      this.ctx.strokeStyle = borderColor;
-    }
-
-    if (lineWidth !== undefined) {
-      this.ctx.lineWidth = lineWidth;
+    if (borderSize !== undefined) {
+      this.ctx.lineWidth = borderSize;
     }
   }
 
