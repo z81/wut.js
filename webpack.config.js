@@ -1,6 +1,6 @@
 module.exports = {
   devtool: "inline-source-map",
-  entry: ["./main.ts", "webpack-dev-server/client?http://localhost:8080/"],
+  entry: ["./main.ts"],
   output: {
     filename: "bundle.js"
   },
