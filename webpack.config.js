@@ -1,6 +1,6 @@
 module.exports = {
   devtool: "inline-source-map",
-  entry: ["./main.ts"],
+  entry: ["./examples/index.ts"],
   output: {
     filename: "bundle.js"
   },
@@ -11,11 +11,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          transpileOnly: false,
-          target: "ES5"
-        }
+        loader: "ts-loader"
       }
     ]
   }

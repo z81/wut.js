@@ -1,12 +1,17 @@
 import Stats from "stats.js/src/Stats";
-import { GraphicEngine } from "./src";
-import circleDemo from "./examples/circles";
-import animDemo from "./examples/animation";
-import dragableResizableDemo from "./examples/draggable_resiazable";
-import windowDemo from "./examples/window";
+import { GraphicEngine } from "../src";
+import circleDemo from "./circles";
+import animDemo from "./animation";
+import dragableResizableDemo from "./draggable_resiazable";
+import windowDemo from "./window";
+
+
+const getThisDemoId = () => (parseInt(document.location.hash.substr(1), 10) || 0);
+
 
 let fps = 30;
-let selectedDemoIdx = 0;
+let selectedDemoIdx = getThisDemoId();
+
 const demos = [
   {
     name: "Circle anim",
@@ -36,11 +41,15 @@ const gui = new window["dat"].GUI();
 const getDemo = () => demos[selectedDemoIdx].demo;
 
 const selectDemo = idx => {
+  document.location.hash = `${idx}`;
+};
+
+window.addEventListener("hashchange", e => {
   getDemo().destroy();
-  selectedDemoIdx = idx;
+  selectedDemoIdx = getThisDemoId();
   getDemo().init();
   getDemo().props(gui);
-};
+}, false)
 
 window["selectDemo"] = selectDemo;
 
