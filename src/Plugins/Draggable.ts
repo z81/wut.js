@@ -3,13 +3,15 @@ import MixinBase from './MixinBase';
 const draggedElements = new Set();
 const startDragPositions = new Map();
 
-const startDrag = (element, e) => {
+const startDrag = (element, handler, e) => {
+    if (handler && e.elementsOnCursor.indexOf(handler) === -1) return;
+
     startDragPositions.set(element, [e.clientX, e.clientY]);
     draggedElements.add(element);
 };
 
 
-const stopDrag = element => {
+const stopDrag = (element, handler) => {
     draggedElements.delete(element);
     startDragPositions.delete(element)
 };
@@ -53,12 +55,16 @@ document.addEventListener('mousemove', e => {
 });
 
 
-export class Draggable extends MixinBase {
-    constructor(element) {
-        super();
-        element.on('mousedown', startDrag.bind(this, element));
-        element.on('mouseup', stopDrag.bind(this, element));
+export function Draggable (handler) {
+    class Draggable extends MixinBase {
+        constructor(element) {
+            super();
+            element.on('mousedown', startDrag.bind(this, element, handler));
+            element.on('mouseup', stopDrag.bind(this, element, handler));
+        }
     }
+
+    return Draggable;
 }
 
 export default Draggable;

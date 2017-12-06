@@ -36,7 +36,7 @@ class CanvasEventsListener {
         }
 
         if (this.prevTarget !== element) {
-            console.log('mouseenter', this.prevTarget, element)
+            // console.log('mouseenter', this.prevTarget, element)
             EventListener.fire('mouseenter', event, element);
         }
 
@@ -68,11 +68,26 @@ class CanvasEventsListener {
         }
 
         event.canvasTarget = null;
-        for(let i = 0; i < elementsOnCursor.length; i++) {
-            if (event.canvasTarget === null || event.canvasTarget.z < elementsOnCursor[i].z) {
-                event.canvasTarget = elementsOnCursor[i];
-            }
+        event.elementsOnCursor = elementsOnCursor;
+
+
+        const targets = elementsOnCursor.sort(this.sortZIndex);
+        
+        if (targets.length > 0) {
+            event.canvasTarget = targets[0];
         }
+
+        for(let t of targets) {
+            event.canvasTarget = t;
+            this.fireEvent(eventName, event, t)
+        }
+
+        // for(let i = 0; i < elementsOnCursor.length; i++) {
+        //     if (event.canvasTarget === null || event.canvasTarget.z < elementsOnCursor[i].z) {
+        //         event.canvasTarget = elementsOnCursor[i];
+        //     }
+        // }
+
 
         if (event.canvasTarget !== null) {
             if (isGroup) {
@@ -96,6 +111,12 @@ class CanvasEventsListener {
             const handler = this.eventHandler.bind(this, eventName);
             this.canvasNode.addEventListener(eventName, handler, false);
         });
+    }
+
+    sortZIndex(a, b) {
+        if (a.z > b.z)  return 1;
+        if (a.z < b.z) return -1;
+        return 0;
     }
 }
 
