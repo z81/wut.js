@@ -8,6 +8,8 @@ const startDrag = (element, handler, e) => {
 
     startDragPositions.set(element, [e.clientX, e.clientY]);
     draggedElements.add(element);
+
+    return false;
 };
 
 
@@ -55,7 +57,7 @@ document.addEventListener('mousemove', e => {
 });
 
 
-export function Draggable (handler) {
+export function Draggable (handler?) {
     class Draggable extends MixinBase {
         constructor(element) {
             super();

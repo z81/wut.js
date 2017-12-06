@@ -93,13 +93,13 @@ const getDirection = ({ width, height, x, y, type, children }, cursorX, cursorY)
     return direction;
 };
 
-export function Resizable (handler) {
+export function Resizable (handler?) {
     class Resizable extends MixinBase {
-        constructor(element) {
+        constructor(element?) {
             super();
             element.on('mousedown', e => {
                 if (handler && e.elementsOnCursor.indexOf(handler) === -1) return;
-                const direction = getDirection(handler, e.offsetX, e.offsetY);
+                const direction = getDirection(e.canvasTarget, e.offsetX, e.offsetY);
 
                 if (e.buttons > 0 && direction !== DIRECTION.NONE) {
                     if (element.mixins.draggable) {
@@ -110,13 +110,15 @@ export function Resizable (handler) {
                     resizableElement = element;
                     resizeStartPosition = [e.offsetX, e.offsetY];
                 }
+
+                return false;
             });
 
-            element.on('mousemove', ({ offsetX, offsetY, elementsOnCursor }) => {
+            element.on('mousemove', ({ offsetX, offsetY, canvasTarget, elementsOnCursor }) => {
                 if (handler && elementsOnCursor.indexOf(handler) === -1) return;
                 if (resizableElement !== null) return;
 
-                const direction = getDirection(handler, offsetX, offsetY);
+                const direction = getDirection(canvasTarget, offsetX, offsetY);
                 let cursor = '';
 
                 if (direction & DIRECTION.LEFT) cursor = 'w-resize';

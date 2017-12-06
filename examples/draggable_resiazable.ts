@@ -33,8 +33,8 @@ for (let x = 1; x <= 2; x++) {
     text.y = rect.y + 24;
 
     g
-      .use(Resizable)
-      .use(Draggable)
+      .use(Resizable())
+      .use(Draggable())
       .add(rect)
       .add(text);
 
