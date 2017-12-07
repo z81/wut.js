@@ -40,9 +40,11 @@ const gui = new window["dat"].GUI();
 
 const getDemo = () => demos[selectedDemoIdx].demo;
 
+
 const selectDemo = idx => {
   document.location.hash = `${idx}`;
 };
+
 
 window.addEventListener("hashchange", e => {
   getDemo().destroy();
@@ -53,12 +55,14 @@ window.addEventListener("hashchange", e => {
 
 window["selectDemo"] = selectDemo;
 
+
 const menu = document.getElementById("menu");
 menu.innerHTML = demos
   .map(
     ({ name }, idx) => `<button onclick="selectDemo(${idx})">${name}</button>`
   )
   .join("");
+
 
 // STATS
 const stats = new Stats();
@@ -70,13 +74,15 @@ stats.dom.style.bottom = "0";
 document.body.appendChild(stats.dom);
 //
 
+
 // CRATE NODE
 const rootNode = document.getElementById("app");
+
 
 // INIT RENDERER
 const renderer = GraphicEngine.init("canvas");
 renderer.appendTo(rootNode);
-renderer.setSize(1000, 900);
+renderer.resize(1000, 900);
 
 // main render function
 const render = timestamp => {
@@ -88,6 +94,7 @@ const render = timestamp => {
   //requestAnimationFrame(render);
 };
 
+
 const createRenderTimer = () =>
   setInterval(() => {
     render(Date.now());
@@ -95,6 +102,7 @@ const createRenderTimer = () =>
 
 let thisRenderTimerIdx = createRenderTimer();
 //requestAnimationFrame(render);
+
 
 gui.add(text, "maxFps", 1, 100).onChange(function(value) {
   fps = value;

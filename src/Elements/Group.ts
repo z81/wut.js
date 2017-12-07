@@ -9,5 +9,5 @@ export class Group extends ElementBase {
         return this;
     }
 
-    public type: String = 'group';
+    public type: string = 'group';
 }

@@ -98,8 +98,9 @@ export function Resizable (handler?) {
         constructor(element?) {
             super();
             element.on('mousedown', e => {
-                if (handler && e.elementsOnCursor.indexOf(handler) === -1) return;
-                const direction = getDirection(e.canvasTarget, e.offsetX, e.offsetY);
+                if (handler && e.canvasTarget !== handler && e.canvasTarget !== handler.parent) return;
+
+                const direction = getDirection(handler || e.canvasTarget, e.offsetX, e.offsetY);
 
                 if (e.buttons > 0 && direction !== DIRECTION.NONE) {
                     if (element.mixins.draggable) {
@@ -132,7 +133,9 @@ export function Resizable (handler?) {
                 if (direction === DIRECTION.TOP + DIRECTION.LEFT) cursor = 'nwse-resize';
                 if (direction === DIRECTION.TOP + DIRECTION.RIGHT) cursor = 'nesw-resize';
 
-                element.cursor = cursor
+                element.cursor = cursor;
+
+                return false;
             });
 
             element.on('mouseleave', (e) => {

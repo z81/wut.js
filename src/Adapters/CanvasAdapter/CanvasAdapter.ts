@@ -1,24 +1,41 @@
 import CanvasEventsListener from "./CanvasEventsListener";
 import EventListener from "../../EventListener";
+import ElementBase from '../../Elements/ElementBase';
 
 export default class CanvasAdapter {
-  private elementNode = null;
-  private canvasNode = null;
-  private ctx = null;
-  private cache = [];
-  private eventListener;
+  private elementNode: HTMLElement;
+  private canvasNode: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D|null;
+  private cache: ElementBase[] = [];
+  private eventListener: CanvasEventsListener;
   public antiAliasing: boolean = false;
+  public stage: object|null = null;
 
+  /**
+   * Create canvas element node
+   */
   private createCanvas() {
     this.canvasNode = document.createElement("canvas");
-    this.elementNode.appendChild(this.canvasNode);
+
+    if (this.elementNode) {
+      this.elementNode.appendChild(this.canvasNode);
+    } else {
+      throw Error("Element node is node defined");
+    }
   }
 
+  /**
+   * Init canvas context
+   */
   private initContext() {
     this.ctx = this.canvasNode.getContext("2d");
   }
 
-  appendTo(elementNode: HTMLElement) {
+  /**
+   * append canvas to htlm element
+   * @param CanvasAdapter 
+   */
+  appendTo(elementNode: HTMLElement): CanvasAdapter {
     this.elementNode = elementNode;
 
     this.createCanvas();
@@ -29,33 +46,53 @@ export default class CanvasAdapter {
     return this;
   }
 
-  private bindEvents() {
-    EventListener.on("mousemove", (event, element) => {
+  /**
+   * Bind events to canvas
+   */
+  private bindEvents(): void {
+    EventListener.on("mousemove", (event: Event, element: ElementBase) => {
       this.setCursor(element.cursor);
     });
 
-    EventListener.on("mouseleave", (event, element) => {
+    EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
       this.setCursor(element.cursor);
     });
   }
 
-  autoSize() {
+  /**
+   * Auth resize canvas
+   */
+  autoSize(): void {
     const { width, height } = this.elementNode.getBoundingClientRect();
-    this.setSize(width, height);
+    this.resize(width, height);
   }
 
-  setSize(width: Number, height: Number) {
+  /**
+   * Resize canvas
+   * @param width 
+   * @param height 
+   */
+  resize(width: number, height: number): CanvasAdapter {
     this.canvasNode.width = width;
     this.canvasNode.height = height;
 
     return this;
   }
 
-  setCursor(cursor: string) {
+  /**
+   * Set cursor
+   * @param cursor css cursor propery value
+   */
+  setCursor(cursor: string): void {
     this.canvasNode.style.cursor = cursor;
   }
 
-  draw(element, i) {
+  /**
+   * Render Element
+   * @param element CanvasElement
+   * @param i index
+   */
+  draw(element: ElementBase, i: number) {
     this.cache.push(element);
 
     switch (element.type) {
@@ -70,7 +107,15 @@ export default class CanvasAdapter {
     }
   }
 
-  drawRect(config) {
+  /**
+   * Render reactangle
+   * @param config Element config
+   */
+  drawRect(config: any) {
+    if (this.ctx === null) {
+      throw Error("2D Context is note defined");
+    }
+
     let { x, y, background, borderColor, width, height, rotate } = config;
 
     if (!this.antiAliasing) {
@@ -96,7 +141,15 @@ export default class CanvasAdapter {
     //this.ctx.restore();
   }
 
-  drawText(config) {
+  /**
+   * Render text
+   * @param config 
+   */
+  drawText(config: any) {
+    if (this.ctx === null) {
+      throw Error("2D Context is note defined");
+    }
+
     let { x, y, text, color, font, fontSize, align } = config;
 
     this.ctx.beginPath();
@@ -117,7 +170,15 @@ export default class CanvasAdapter {
     this.ctx.fillText(text, x, y);
   }
 
-  drawCircle(config) {
+  /**
+   * Render circle
+   * @param config 
+   */
+  drawCircle(config: any) {
+    if (this.ctx === null) {
+      throw Error("2D Context is note defined");
+    }
+
     let { x, y, radius, background, lineWidth, borderColor } = config;
 
     if (!this.antiAliasing) {
@@ -133,6 +194,10 @@ export default class CanvasAdapter {
     this.ctx.closePath();
   }
 
+  /**
+   * Set paramenters to canvas
+   * @param config canvas parameters
+   */
   configureCanvas({
     x,
     y,
@@ -141,7 +206,11 @@ export default class CanvasAdapter {
     background,
     borderColor,
     borderSize
-  }) {
+  }: any) {
+    if (this.ctx === null) {
+      throw Error("2D Context is note defined");
+    }
+
     this.ctx.fillStyle = background;
     this.ctx.strokeStyle = borderColor;
 
@@ -150,7 +219,14 @@ export default class CanvasAdapter {
     }
   }
 
+  /**
+   * Clear all
+   */
   clear() {
+    if (this.ctx === null) {
+      throw Error("2D Context is note defined");
+    }
+
     this.cache.length = 0;
     this.ctx.clearRect(0, 0, this.canvasNode.width, this.canvasNode.height);
   }

@@ -1,18 +1,19 @@
 import EventListener from '../../EventListener';
+import ElementBase from '../../Elements/ElementBase';
 
 class CanvasEventsListener {
     private cache;
-    private canvasNode;
+    private canvasNode: HTMLCanvasElement;
     private eventsForWatch = ['mousemove', 'click', 'mouseup', 'mousedown'];
-    private prevTarget = null;
+    private prevTarget: ElementBase|null = null;
 
-    constructor(canvasNode, cache) {
+    constructor(canvasNode: HTMLCanvasElement, cache) {
         this.canvasNode = canvasNode;
         this.cache = cache;
         this.bindEventsListeners();
     }
 
-    xray({ type, x, y, radius, width, height }, pointX, pointY) {
+    xray({ type, x, y, radius, width, height }: any, pointX: number, pointY: number) {
         if (type === 'rect') {
             return (
                 (pointX >= x && pointX <= x + width) &&
@@ -30,7 +31,7 @@ class CanvasEventsListener {
         return false;
     }
 
-    fireEvent(eventName, event, element) {
+    fireEvent(eventName: string, event: Event, element: ElementBase): boolean|void {
         if (this.prevTarget !== null && this.prevTarget !== element) {
             EventListener.fire('mouseleave', event, this.prevTarget);
         }
@@ -41,14 +42,18 @@ class CanvasEventsListener {
         }
 
         this.prevTarget = element;
-        EventListener.fire(eventName, event, element);
+        if (EventListener.fire(eventName, event, element) === false) return false;
 
         if (element.type === 'group') {
-            element.children.forEach(el => EventListener.fire(eventName, event, el));
+            for(let el of element.children) {
+                if (EventListener.fire(eventName, event, el) === false) {
+                    return false;
+                }
+            }
         }
     }
 
-    eventHandler(eventName, event, root = this.cache, isGroup = false) {
+    eventHandler(eventName: string, event, root = this.cache, isGroup = false) {
         const elementsOnCursor = [];
 
         for(let element of root) {
@@ -79,7 +84,11 @@ class CanvasEventsListener {
 
         for(let t of targets) {
             event.canvasTarget = t;
-            this.fireEvent(eventName, event, t)
+            
+            if (this.fireEvent(eventName, event, t) === false) {
+                console.log('break')
+                break;
+            }
         }
 
         // for(let i = 0; i < elementsOnCursor.length; i++) {

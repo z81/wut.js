@@ -4,12 +4,14 @@ export default class ElementBase {
   public x: number = 0;
   public y: number = 0;
   public z: number = 0;
+  public type: string = 'none';
   public borderSize: number = 1;
   public borderColor: string = "#000";
   public background: string = "#fff";
   public cursor: string = "";
   public rotate: number = 0;
   public aimationType: string = "linear";
+  public children: any = [];
   private parent = null;
   public readonly mixins = {};
 
