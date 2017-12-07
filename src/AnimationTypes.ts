@@ -35,7 +35,7 @@
  *
 */
 
-const animationTypes = {
+export const animationTypes = {
   easeInQuad: function(t, b, c, d) {
     return c * (t /= d) * t + b;
   },
@@ -119,11 +119,7 @@ const animationTypes = {
       var s = p / 4;
     } else var s = p / (2 * Math.PI) * Math.asin(c / a);
     return (
-      -(
-        a *
-        Math.pow(2, 10 * (t -= 1)) *
-        Math.sin((t * d - s) * (2 * Math.PI) / p)
-      ) + b
+      -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b
     );
   },
   easeOutElastic: function(t, b, c, d) {
@@ -137,11 +133,7 @@ const animationTypes = {
       a = c;
       var s = p / 4;
     } else var s = p / (2 * Math.PI) * Math.asin(c / a);
-    return (
-      a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) +
-      c +
-      b
-    );
+    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
   },
   easeInOutElastic: function(t, b, c, d) {
     var s = 1.70158;
@@ -157,16 +149,11 @@ const animationTypes = {
     if (t < 1)
       return (
         -0.5 *
-          (a *
-            Math.pow(2, 10 * (t -= 1)) *
-            Math.sin((t * d - s) * (2 * Math.PI) / p)) +
+          (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) +
         b
       );
     return (
-      a *
-        Math.pow(2, -10 * (t -= 1)) *
-        Math.sin((t * d - s) * (2 * Math.PI) / p) *
-        0.5 +
+      a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * 0.5 +
       c +
       b
     );
@@ -181,12 +168,11 @@ const animationTypes = {
   },
   easeInOutBack: function(t, b, c, d, s) {
     if (s == undefined) s = 1.70158;
-    if ((t /= d / 2) < 1)
-      return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
+    if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
     return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
   },
-  easeInBounce: function(t, b, c, d) {
-    return c - this.easing.easeOutBounce(d - t, 0, c, d) + b;
+  easeInBounce: (t, b, c, d) => {
+    return c - animationTypes.easeOutBounce(d - t, 0, c, d) + b;
   },
   easeOutBounce: function(t: any, b, c, d) {
     if ((t /= d) < 1 / 2.75) {
@@ -199,16 +185,12 @@ const animationTypes = {
       return c * (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375) + b;
     }
   },
-  easeInOutBounce: function(t, b, c, d) {
-    if (t < d / 2)
-      return this.easing.easeInBounce(t * 2, 0, c, d) * 0.5 + b;
-    return (
-        this.easing.easeOutBounce(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b
-    );
+  easeInOutBounce: (t, b, c, d) => {
+    if (t < d / 2) return animationTypes.easeInBounce(t * 2, 0, c, d) * 0.5 + b;
+    return animationTypes.easeOutBounce(t * 2 - d, 0, c, d) * 0.5 + c * 0.5 + b;
   }
 };
 
-export default animationTypes;
 /*
  *
  * TERMS OF USE - EASING EQUATIONS

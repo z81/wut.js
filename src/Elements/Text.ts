@@ -19,15 +19,21 @@ export class Text extends ElementBase {
         this._fontSize = value;
     }
 
+    public set font(value) {
+        const [size, name] = value.split(' ');
+        this._fontSize = parseInt(size, 10);
+        this._fontName = name;
+    }
+
+    public get font() {
+        return this.buildFont(this._fontSize, this._fontName);
+    }
+
     private buildFont(fontSize: number, fontName: string) {
         return `${fontSize}px ${fontName}`;
     }
 
-    public text: string = '';
     public type: string = 'text';
-    private font: string = '14px Georgia';
     private _fontSize: number = 14;
     private _fontName: string = 'Georgia';
-    public align: string = '';
-    public color:string = '#fff';
 }

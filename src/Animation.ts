@@ -1,4 +1,4 @@
-import animationTypes from "./AnimationTypes";
+import { animationTypes } from "./AnimationTypes";
 
 const ANIMATION_SPEED = {
   slow: 1500,
@@ -10,26 +10,32 @@ const ANIMATION_FPS = 60;
 const activeAnimations = new Map();
 
 const getAnimationTiming = (type, t, b, c, d) => {
-  if (animationTypes[type] === undefined) {
+  const isFunctionAnimation = typeof type === "function";
+
+  if (!isFunctionAnimation && animationTypes[type] === undefined) {
     throw Error("Unknown animation type");
   }
 
-  return animationTypes[type](t, b, c, d);
+  const animation = isFunctionAnimation ? type : animationTypes[type];
+
+  return animation(t, b, c, d);
 };
+
 
 class AnimationCreator {
   private steps = [];
   private activeAnimations = [];
 
-  constructor(callback, time) {
-    if (callback) {
-      this.step(callback, time);
+  constructor(config, time) {
+    if (config) {
+      this.step(config, time);
     }
   }
 
   step(config, animationDuration) {
     if (typeof config === "object") {
       const keys = Object.keys(config);
+
       keys.forEach(attribute => {
         const actionType = "attribute";
         const endValue = config[attribute];
@@ -103,5 +109,6 @@ class AnimationCreator {
 }
 
 export const Animation = (config, delay) => new AnimationCreator(config, delay);
+export const animTypes = animationTypes;
 
 export default Animation;

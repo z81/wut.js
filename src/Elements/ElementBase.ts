@@ -1,19 +1,58 @@
 import EventListener from "../EventListener";
 
-export default class ElementBase {
-  public x: number = 0;
-  public y: number = 0;
-  public z: number = 0;
+export interface ElementProps {
+  x?: number;
+  y?: number;
+  z?: number;
+  width?: number;
+  height?: number;
+  borderSize?: number;
+  borderColor?: string;
+  background?: string;
+  cursor?: string;
+  rotate?: number;
+  aimationType?: any;
+  children?: any;
+  id?: any;
+  text?: string;
+  font?: string;
+  align?: string;
+  color?: string;
+  radius?: number;
+  borderRadius?: number;
+}
+
+export default class ElementBase implements ElementProps {
   public type: string = 'none';
-  public borderSize: number = 1;
-  public borderColor: string = "#000";
-  public background: string = "#fff";
-  public cursor: string = "";
-  public rotate: number = 0;
-  public aimationType: string = "linear";
-  public children: any = [];
+  public x = 0;
+  public y = 0;
+  public z = 0;
+  public width = 10;
+  public height = 10;
+  public borderSize = 1;
+  public borderColor = "#000";
+  public background = "#fff";
+  public cursor = "";
+  public rotate = 0;
+  public aimationType = "easeOutQuint";
+  public children = [];
+  public id = '';
+  public text = '';
+  public align = '';
+  public color = '#fff';
+  public radius = 0;
+  public borderRadius = 0;
+  public font = '14px Georgia';
   private parent = null;
   public readonly mixins = {};
+
+  setProps(config?: ElementProps) {
+    if (config) {
+      for(const propName in config) {
+        this[propName] = config[propName];
+      }
+    }
+  }
 
   moveTo(x: number, y: number) {
     this.x = x;

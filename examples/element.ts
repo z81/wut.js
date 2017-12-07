@@ -1,29 +1,63 @@
+import {Animation, animTypes} from '../src/Animation';
+import {Circle} from '../src/Elements/Circle';
 import { Text, Group, Rect } from "../src/Elements";
 import { Draggable, Resizable } from "../src/Plugins";
 
-const groupList = new Set();
-
 const g = new Group();
-const win = new Rect();
+const el = new Rect();
+const d1 = new Circle();
+const d2 = new Circle();
 
-g.add(win);
-groupList.add(g);
+g.add(el);
+g.add(d1);
+g.add(d2);
 
-const updateWindow = (x, y, width, height) => {
-  win.x = x;
-  win.y = y;
-  win.width = width;
-  win.height = height;
-  win.borderColor = "#00BCD4";
-  win.borderSize = 7;
-};
+el.setProps({
+    x: 100,
+    y: 100,
+    width: 100,
+    height: 100,
+    background: "#eee",
+    borderColor: "#ccc",
+    borderSize: 1,
+    borderRadius: 10
+});
 
-updateWindow(600, 50, 250, 150);
+d1.setProps({
+    x: 200,
+    y: 120,
+    radius: 4,
+    background: '#44ff00',
+    borderColor: '#449f00',
+    aimationType: animTypes.easeOutQuint
+});
+
+d1.on(
+    "mouseenter",
+    Animation(
+      {
+        radius: 10
+      },
+      200
+    ).end()
+);
+
+
+d1.on(
+    "mouseleave",
+    Animation(
+      {
+        radius: 4
+      },
+      200
+    ).end()
+);
+
+g.use(Draggable())
 
 // main render function
 const render = (timestamp, renderer) => {
-  updateWindow(win.x, win.y, win.width, win.height);
-  groupList.forEach(renderer.draw, renderer);
+    renderer.draw(g);
 };
 
 export default {

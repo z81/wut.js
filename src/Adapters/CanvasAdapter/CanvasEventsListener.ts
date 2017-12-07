@@ -86,7 +86,6 @@ class CanvasEventsListener {
             event.canvasTarget = t;
             
             if (this.fireEvent(eventName, event, t) === false) {
-                console.log('break')
                 break;
             }
         }
@@ -98,19 +97,26 @@ class CanvasEventsListener {
         // }
 
 
-        if (event.canvasTarget !== null) {
-            if (isGroup) {
-                return true;
-            }
-            else {
-                this.fireEvent(eventName, event, event.canvasTarget);
-            }
-        }
-        else if (this.prevTarget !== null && !isGroup) {
+        console.log(event.canvasTarget, this.prevTarget)
+        if (!isGroup && this.prevTarget !== null && event.canvasTarget !== this.prevTarget) {
+            console.log('leave')
+            const target = event.canvasTarget;
             event.canvasTarget = this.prevTarget;
+
             EventListener.fire('mouseleave', event, this.prevTarget);
-            this.prevTarget = null;
+
+            this.prevTarget = target;
+            event.canvasTarget = target;
         }
+
+        // if (event.canvasTarget !== null) {
+        //     if (isGroup) {
+        //         return true;
+        //     }
+        //     else {
+        //         this.fireEvent(eventName, event, event.canvasTarget);
+        //     }
+        // }
 
         return false;
     }

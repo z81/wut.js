@@ -4,6 +4,7 @@ import circleDemo from "./circles";
 import animDemo from "./animation";
 import dragableResizableDemo from "./draggable_resiazable";
 import windowDemo from "./window";
+import elementDemo from "./element";
 
 
 const getThisDemoId = () => (parseInt(document.location.hash.substr(1), 10) || 0);
@@ -28,6 +29,10 @@ const demos = [
   {
     name: "Window",
     demo: windowDemo
+  },
+  {
+    name: "Element",
+    demo: elementDemo
   }
 ];
 

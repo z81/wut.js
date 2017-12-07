@@ -1,6 +1,7 @@
 import CanvasEventsListener from "./CanvasEventsListener";
 import EventListener from "../../EventListener";
 import ElementBase from '../../Elements/ElementBase';
+import { Stage } from "../../Elements/Stage";
 
 export default class CanvasAdapter {
   private elementNode: HTMLElement;
@@ -43,6 +44,7 @@ export default class CanvasAdapter {
     this.autoSize();
     this.eventListener = new CanvasEventsListener(this.canvasNode, this.cache);
     this.bindEvents();
+    this.stage = new Stage();
     return this;
   }
 
@@ -116,7 +118,7 @@ export default class CanvasAdapter {
       throw Error("2D Context is note defined");
     }
 
-    let { x, y, background, borderColor, width, height, rotate } = config;
+    let { x, y, background, borderColor, width, height, rotate, borderRadius } = config;
 
     if (!this.antiAliasing) {
       x += 0.5;
@@ -132,13 +134,42 @@ export default class CanvasAdapter {
     //   this.ctx.rect(-width / 2, -height, width, height);
     //   config._prevRotate = rotate;
     // } else if (rotate !== 0) {
-    this.ctx.rect(x, y, width, height);
+    if (borderRadius) {
+      this.drawRoundRect(x, y, width, height, borderRadius);
+    } else {
+      this.ctx.rect(x, y, width, height);
+    }
     // }
 
     this.ctx.stroke();
     this.ctx.fill();
     this.ctx.translate(0, 0);
     //this.ctx.restore();
+  }
+
+  /**
+   * Draw rounded reactangle
+   * @param x 
+   * @param y 
+   * @param width 
+   * @param height 
+   * @param radius 
+   */
+  drawRoundRect(x, y, width, height, radius) {
+    this.ctx.moveTo(x + radius, y + 0.5);
+    this.ctx.lineTo(x + width - radius, y + 0.5);
+    this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius + 0.5);
+    this.ctx.lineTo(x + width, y + height - radius + 0.5);
+    this.ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height + 0.5
+    );
+    this.ctx.lineTo(x + radius, y + height + 0.5);
+    this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius + 0.5);
+    this.ctx.lineTo(x, y + radius + 0.5);
+    this.ctx.quadraticCurveTo(x, y, x + radius, y + 0.5);
   }
 
   /**
