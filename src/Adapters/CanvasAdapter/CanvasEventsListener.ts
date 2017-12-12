@@ -62,17 +62,11 @@ class CanvasEventsListener {
         for(let element of root) {
 
             if (element.type === 'group') {
-                // need map
-                // for(let child of element.children) {
-                //     console.log(child)
-                // }
                 if (this.eventHandler(eventName, event, element.children, true)) {
-                    //this.fireEvent(eventName, event, element);
                     elementsOnCursor.push(element);
                 }
             }
             else if (this.xray(element, event.offsetX, event.offsetY)) {
-                //this.fireEvent(eventName, event, element);
                 elementsOnCursor.push(element);
             }
         }
@@ -107,18 +101,18 @@ class CanvasEventsListener {
         // }
 
 
-        if (!isGroup && this.prevTarget !== null && target !== this.prevTarget) {
-            EventListener.fire('mouseleave', event, this.prevTarget);
-            this.prevTarget = target;
-        }
-
-        if (!isGroup && target !== this.prevTarget) { 
+        if (!isGroup && target !== this.prevTarget) {
+            if (this.prevTarget !== null) {
+                console.log(eventName, this.prevTarget, '->', target)
+                EventListener.fire('mouseleave', event, this.prevTarget);
+            }
             if (target !== null) {
                 EventListener.fire('mouseenter', event, target);
             }
 
             this.prevTarget = target;
         }
+        
 
     
         // if (event.canvasTarget !== null) {
