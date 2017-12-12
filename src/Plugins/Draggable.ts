@@ -9,13 +9,16 @@ const startDrag = (element, handler, e) => {
     startDragPositions.set(element, [e.clientX, e.clientY]);
     draggedElements.add(element);
 
+    element.fire('dragstart', e, element);
     return false;
 };
 
 
-const stopDrag = (element, handler) => {
+const stopDrag = (element, handler, e) => {
     draggedElements.delete(element);
-    startDragPositions.delete(element)
+    startDragPositions.delete(element);
+
+    element.fire('dragend', e, element);
 };
 
 
@@ -54,6 +57,8 @@ document.addEventListener('mousemove', e => {
             drag(element, e);
         }
     });
+
+    return false;
 });
 
 

@@ -6,14 +6,12 @@ export class Group extends ElementBase {
     constructor(...elements: ElementBase[]) {
         super();
 
-        if (elements) {
-            this.children  = elements;
-        }
+        elements.forEach(this.add)
     }
 
-    add(element) {
+    add = (element: ElementBase) => {
+        element.setParent(this);
         this.children.push(element);
-        element.parent = this;
         return this;
     }
 

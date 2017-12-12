@@ -112,11 +112,10 @@ export function Resizable (handler?) {
                     resizeStartPosition = [e.offsetX, e.offsetY];
                 }
 
-                return false;
             });
 
             element.on('mousemove', ({ offsetX, offsetY, canvasTarget, elementsOnCursor }) => {
-                if (handler && elementsOnCursor.indexOf(handler) === -1) return;
+                if (handler && canvasTarget !== handler && canvasTarget !== handler.parent) return;
                 if (resizableElement !== null) return;
 
                 const direction = getDirection(canvasTarget, offsetX, offsetY);
@@ -135,7 +134,6 @@ export function Resizable (handler?) {
 
                 element.cursor = cursor;
 
-                return false;
             });
 
             element.on('mouseleave', (e) => {

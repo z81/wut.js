@@ -1,5 +1,11 @@
 import ElementBase from "./ElementBase";
 
+const sortZIndex = (a, b) => {
+  if (a.z > b.z) return 1;
+  if (a.z < b.z) return -1;
+  return 0;
+}
+
 export class Stage {
   public children: ElementBase[] = [];
 
@@ -9,6 +15,8 @@ export class Stage {
     if (element.type === 'group') {
       element.children.forEach(this.add)
     }
+
+    this.children = this.children.sort(sortZIndex);
   }
 
   clear = () => {

@@ -43,7 +43,7 @@ export default class ElementBase implements ElementProps {
   public radius = 0;
   public borderRadius = 0;
   public font = '14px Georgia';
-  private parent = null;
+  public parent: ElementBase|null = null;
   public readonly mixins = {};
 
   setProps(config?: ElementProps) {
@@ -52,6 +52,10 @@ export default class ElementBase implements ElementProps {
         this[propName] = config[propName];
       }
     }
+  }
+
+  setParent(parent: ElementBase) {
+    this.parent = parent;
   }
 
   moveTo(x: number, y: number) {
@@ -63,7 +67,7 @@ export default class ElementBase implements ElementProps {
     EventListener.on(eventName, (event, target) => {
       if (target !== this && target.parent !== this) return;
 
-      callback(event);
+      return callback(event);
     });
     return this;
   }

@@ -11,15 +11,15 @@ const circle = new Circle();
 circle.radius = 20;
 circle.background = Props.background;
 circle.moveTo(700, 400);
-circle.aimationType = "easeInOutElastic";
 
 circle.on(
   "mouseenter",
   Animation(
     {
-      radius: 50
-    },
-    1500
+      radius: 50,
+      type: "easeInOutElastic",
+      duration: 1000
+    }
   ).end()
 );
 
@@ -27,9 +27,10 @@ circle.on(
   "mouseleave",
   Animation(
     {
-      radius: 20
-    },
-    1000
+      radius: 20,
+      type: "easeInOutElastic",
+      duration: 1000
+    }
   ).end()
 );
 
@@ -39,8 +40,8 @@ rect.width = 50;
 rect.height = 50;
 rect.background = Props.background;
 rect.rotate = 45;
-rect.aimationType = "easeInOutBack";
 rect.moveTo(200, 400);
+
 
 rect.on(
   "mousedown",
@@ -49,11 +50,13 @@ rect.on(
       height: 100,
       width: 100,
       x: 720,
-      y: 420
-    },
-    1500
+      y: 420,
+      type: "easeInOutBack",
+      duration: 1000
+    }
   ).end()
 );
+
 
 rect.on(
   "mouseleave",
@@ -62,11 +65,13 @@ rect.on(
       height: 50,
       width: 50,
       x: 200,
-      y: 400
-    },
-    1500
+      y: 400,
+      type: "easeInOutBack",
+      duration: 1000
+    }
   ).end()
 );
+
 
 const g = new  Group(rect, circle);
 //

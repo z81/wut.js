@@ -1,2 +1,2 @@
-export * from './GraphicEngine';
-export * from './Animation';
+export * from "./GraphicEngine";
+export * from "./Animation/index";

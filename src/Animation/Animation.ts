@@ -1,4 +1,5 @@
-import { animationTypes } from "./AnimationTypes";
+import { animationTypes } from './AnimationTypes';
+import { IAnimationConfig } from './IAnimationConfig';
 
 const ANIMATION_SPEED = {
   slow: 1500,
@@ -6,6 +7,8 @@ const ANIMATION_SPEED = {
 };
 
 const ANIMATION_FPS = 60;
+
+const animationIgnoreAttributes = ["type", "delay"];
 
 const activeAnimations = new Map();
 
@@ -26,17 +29,21 @@ class AnimationCreator {
   private steps = [];
   private activeAnimations = [];
 
-  constructor(config, time) {
+  constructor(config) {
     if (config) {
-      this.step(config, time);
+      this.step(config);
     }
   }
 
-  step(config, animationDuration) {
+  step(config) {
     if (typeof config === "object") {
       const keys = Object.keys(config);
 
       keys.forEach(attribute => {
+        if (animationIgnoreAttributes.indexOf(attribute) !== -1) {
+          return;
+        }
+
         const actionType = "attribute";
         const endValue = config[attribute];
         const timingType = config.timing;
@@ -46,7 +53,8 @@ class AnimationCreator {
           attribute,
           endValue,
           timingType,
-          animationDuration
+          animationType: config.type,
+          animationDuration: config.duration
         });
       });
     }
@@ -87,7 +95,7 @@ class AnimationCreator {
   }
 
   private startAnimationTimer(canvasTarget, animConfig, t) {
-    const { startValue, endValue, attribute, animationDuration } = animConfig;
+    const { startValue, endValue, attribute, animationDuration, animationType } = animConfig;
     const animationStepValue =
       (endValue - startValue) / (animationDuration / ANIMATION_FPS);
     const isAnimationCompleted =
@@ -98,17 +106,18 @@ class AnimationCreator {
       this.stopAnimation(canvasTarget);
     } else {
       canvasTarget[attribute] = getAnimationTiming(
-        canvasTarget.aimationType,
+        animationType,
         t,
         startValue,
         endValue - startValue,
         animationDuration
       );
+
     }
   }
 }
 
-export const Animation = (config, delay) => new AnimationCreator(config, delay);
+export const Animation = (config: any) => new AnimationCreator(config);
 export const animTypes = animationTypes;
 
 export default Animation;

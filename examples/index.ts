@@ -91,17 +91,19 @@ const render = timestamp => {
   //requestAnimationFrame(render);
 };
 
-getDemo().init(renderer);
+// getDemo().init(renderer);
 
-window.addEventListener("hashchange", e => {
+const init = () => {
   getDemo().destroy();
-  renderer.clear();
-  renderer.stage.clear();
+  renderer.clen();
 
   selectedDemoIdx = getThisDemoId();
   getDemo().init(renderer);
   getDemo().props(gui);
-}, false)
+}
+
+window.addEventListener("hashchange", init, false)
+init();
 
 window["selectDemo"] = selectDemo;
 
