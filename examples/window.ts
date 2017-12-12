@@ -85,11 +85,13 @@ updateWindow(600, 50, 250, 150);
 // main render function
 const render = (timestamp, renderer) => {
   updateWindow(win.x, win.y, win.width, win.height);
-  groupList.forEach(renderer.draw, renderer);
+  renderer.render();
 };
 
 export default {
-  init: () => {},
+  init: (renderer) => {
+    renderer.stage.add(g);
+  },
   destroy: () => {},
   render,
   props: gui => {}

@@ -3,14 +3,11 @@ import {Circle} from '../src/Elements/Circle';
 import { Text, Group, Rect } from "../src/Elements";
 import { Draggable, Resizable } from "../src/Plugins";
 
-const g = new Group();
 const el = new Rect();
 const d1 = new Circle();
 const d2 = new Circle();
+const g = new Group(el, d1, d2);
 
-g.add(el);
-g.add(d1);
-g.add(d2);
 
 el.setProps({
     x: 100,
@@ -57,11 +54,14 @@ g.use(Draggable())
 
 // main render function
 const render = (timestamp, renderer) => {
-    renderer.draw(g);
+    //renderer.draw(g);
+    renderer.render();
 };
 
 export default {
-  init: () => {},
+  init: (renderer) => {
+    renderer.stage.add(g);
+  },
   destroy: () => {},
   render,
   props: gui => {}

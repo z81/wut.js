@@ -9,7 +9,7 @@ const getTimeColor = timestamp => {
 // generate primitives
 const circleList = new Map();
 const textList = new Map();
-const groupList = new Map();
+const groupList = [];
 const frozenElements = new Set();
 
 let id = 1;
@@ -38,7 +38,7 @@ for (let x = 1; x <= 2; x++) {
       .add(rect)
       .add(text);
 
-    groupList.set("r" + id, g);
+    groupList.push(g);
 
     id++;
   }
@@ -69,11 +69,13 @@ const render = (timestamp, renderer) => {
     text.y = circle.y;
   });
 
-  groupList.forEach(renderer.draw, renderer);
+  renderer.render();
 };
 
 export default {
-  init: () => {},
+  init: (render) => {
+    render.stage.add.apply(this, groupList);
+  },
   destroy: () => {},
   render,
   props: gui => {}

@@ -7,10 +7,9 @@ export default class CanvasAdapter {
   private elementNode: HTMLElement;
   private canvasNode: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D|null;
-  private cache: ElementBase[] = [];
   private eventListener: CanvasEventsListener;
   public antiAliasing: boolean = false;
-  public stage: object|null = null;
+  public stage: Stage|null = null;
 
   /**
    * Create canvas element node
@@ -42,9 +41,9 @@ export default class CanvasAdapter {
     this.createCanvas();
     this.initContext();
     this.autoSize();
-    this.eventListener = new CanvasEventsListener(this.canvasNode, this.cache);
-    this.bindEvents();
     this.stage = new Stage();
+    this.eventListener = new CanvasEventsListener(this.canvasNode, this.stage);
+    this.bindEvents();
     return this;
   }
 
@@ -94,9 +93,7 @@ export default class CanvasAdapter {
    * @param element CanvasElement
    * @param i index
    */
-  draw(element: ElementBase, i: number) {
-    this.cache.push(element);
-
+  draw = (element: ElementBase, i: number) => {
     switch (element.type) {
       case "circle":
         return this.drawCircle(element);
@@ -258,7 +255,13 @@ export default class CanvasAdapter {
       throw Error("2D Context is note defined");
     }
 
-    this.cache.length = 0;
     this.ctx.clearRect(0, 0, this.canvasNode.width, this.canvasNode.height);
+  }
+
+  /**
+   * Render stage
+   */
+  render = () => {
+    this.stage.children.forEach(this.draw);
   }
 }

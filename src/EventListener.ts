@@ -14,7 +14,9 @@ class EventListener {
     return this;
   }
 
-  static fire(eventName: string, event: Event, target: any) {
+  static fire(eventName: string, event: any, target: any) {
+    event.canvasTarget = target;
+
     const callbacks = this.eventListeners.get(eventName);
     if (!callbacks) return;
 

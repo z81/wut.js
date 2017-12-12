@@ -1,7 +1,17 @@
-export class Stage {
-  private elements: any = new Set();
+import ElementBase from "./ElementBase";
 
-  add(element) {
-    this.elements.add(element);
+export class Stage {
+  public children: ElementBase[] = [];
+
+  add = (element: ElementBase) => {
+    this.children.push(element);
+
+    if (element.type === 'group') {
+      element.children.forEach(this.add)
+    }
+  }
+
+  clear = () => {
+    this.children.length = 0;
   }
 }

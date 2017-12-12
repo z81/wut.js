@@ -51,14 +51,6 @@ const selectDemo = idx => {
 };
 
 
-window.addEventListener("hashchange", e => {
-  getDemo().destroy();
-  selectedDemoIdx = getThisDemoId();
-  getDemo().init();
-  getDemo().props(gui);
-}, false)
-
-window["selectDemo"] = selectDemo;
 
 
 const menu = document.getElementById("menu");
@@ -99,6 +91,19 @@ const render = timestamp => {
   //requestAnimationFrame(render);
 };
 
+getDemo().init(renderer);
+
+window.addEventListener("hashchange", e => {
+  getDemo().destroy();
+  renderer.clear();
+  renderer.stage.clear();
+
+  selectedDemoIdx = getThisDemoId();
+  getDemo().init(renderer);
+  getDemo().props(gui);
+}, false)
+
+window["selectDemo"] = selectDemo;
 
 const createRenderTimer = () =>
   setInterval(() => {

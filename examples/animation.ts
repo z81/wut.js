@@ -1,6 +1,6 @@
 import { Circle, Rect } from "../src/Elements";
 import { Animation } from "../src";
-const groupList = new Map();
+import { Group } from '../src/Elements/Group';
 
 const Props = new function() {
   this.background = "#5a0";
@@ -33,7 +33,6 @@ circle.on(
   ).end()
 );
 
-groupList.set("123", circle);
 //
 const rect = new Rect();
 rect.width = 50;
@@ -69,7 +68,7 @@ rect.on(
   ).end()
 );
 
-groupList.set("1235", rect);
+const g = new  Group(rect, circle);
 //
 
 let thisGUIItemInstance = [];
@@ -116,11 +115,13 @@ const avaliableAnimationTypes = [
 ];
 
 export default {
-  init: () => {},
+  init: (render) => {
+    render.stage.add(g);
+  },
   destroy: () => {
     removeBackgroundProp();
   },
-  render: (_, renderer) => groupList.forEach(renderer.draw, renderer),
+  render: (_, renderer) => renderer.render(),
   props: gui => {
     thisGUIInstance = gui;
     removeBackgroundProp();

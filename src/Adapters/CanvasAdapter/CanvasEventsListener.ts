@@ -1,15 +1,16 @@
 import EventListener from '../../EventListener';
 import ElementBase from '../../Elements/ElementBase';
+import { Stage } from '../../Elements/Stage';
 
 class CanvasEventsListener {
-    private cache;
+    private stage: Stage|null;
     private canvasNode: HTMLCanvasElement;
     private eventsForWatch = ['mousemove', 'click', 'mouseup', 'mousedown'];
     private prevTarget: ElementBase|null = null;
 
-    constructor(canvasNode: HTMLCanvasElement, cache) {
+    constructor(canvasNode: HTMLCanvasElement, stage: Stage) {
         this.canvasNode = canvasNode;
-        this.cache = cache;
+        this.stage = stage;
         this.bindEventsListeners();
     }
 
@@ -32,16 +33,18 @@ class CanvasEventsListener {
     }
 
     fireEvent(eventName: string, event: Event, element: ElementBase): boolean|void {
-        if (this.prevTarget !== null && this.prevTarget !== element) {
-            EventListener.fire('mouseleave', event, this.prevTarget);
-        }
+        // if (this.prevTarget !== null && this.prevTarget !== element) {
+        //     console.log('leave', this.prevTarget, element)
+        //     EventListener.fire('mouseleave', event, this.prevTarget);
+        // }
 
-        if (this.prevTarget !== element) {
-            // console.log('mouseenter', this.prevTarget, element)
-            EventListener.fire('mouseenter', event, element);
-        }
+        // if (this.prevTarget !== element) {
+        //     console.log('mouseenter', this.prevTarget, element)
+        //     EventListener.fire('mouseenter', event, element);
+        //     this.prevTarget = element;
+        // }
 
-        this.prevTarget = element;
+        // this.prevTarget = element;
         if (EventListener.fire(eventName, event, element) === false) return false;
 
         if (element.type === 'group') {
@@ -53,42 +56,49 @@ class CanvasEventsListener {
         }
     }
 
-    eventHandler(eventName: string, event, root = this.cache, isGroup = false) {
+    eventHandler = (eventName: string, event, root = this.stage.children, isGroup = false) => {
         const elementsOnCursor = [];
 
         for(let element of root) {
 
             if (element.type === 'group') {
+                // need map
+                // for(let child of element.children) {
+                //     console.log(child)
+                // }
                 if (this.eventHandler(eventName, event, element.children, true)) {
                     //this.fireEvent(eventName, event, element);
                     elementsOnCursor.push(element);
                 }
-                continue;
             }
-
-            if (this.xray(element, event.offsetX, event.offsetY)) {
+            else if (this.xray(element, event.offsetX, event.offsetY)) {
                 //this.fireEvent(eventName, event, element);
                 elementsOnCursor.push(element);
             }
         }
 
-        event.canvasTarget = null;
+        
         event.elementsOnCursor = elementsOnCursor;
-
-
         const targets = elementsOnCursor.sort(this.sortZIndex);
+        let target = null;
         
         if (targets.length > 0) {
-            event.canvasTarget = targets[0];
+            target = targets[0];
         }
 
+        if (isGroup) {
+            return !!target;
+        }
+
+
         for(let t of targets) {
-            event.canvasTarget = t;
+            target = t;
             
             if (this.fireEvent(eventName, event, t) === false) {
                 break;
             }
         }
+
 
         // for(let i = 0; i < elementsOnCursor.length; i++) {
         //     if (event.canvasTarget === null || event.canvasTarget.z < elementsOnCursor[i].z) {
@@ -97,18 +107,20 @@ class CanvasEventsListener {
         // }
 
 
-        console.log(event.canvasTarget, this.prevTarget)
-        if (!isGroup && this.prevTarget !== null && event.canvasTarget !== this.prevTarget) {
-            console.log('leave')
-            const target = event.canvasTarget;
-            event.canvasTarget = this.prevTarget;
-
+        if (!isGroup && this.prevTarget !== null && target !== this.prevTarget) {
             EventListener.fire('mouseleave', event, this.prevTarget);
-
             this.prevTarget = target;
-            event.canvasTarget = target;
         }
 
+        if (!isGroup && target !== this.prevTarget) { 
+            if (target !== null) {
+                EventListener.fire('mouseenter', event, target);
+            }
+
+            this.prevTarget = target;
+        }
+
+    
         // if (event.canvasTarget !== null) {
         //     if (isGroup) {
         //         return true;
