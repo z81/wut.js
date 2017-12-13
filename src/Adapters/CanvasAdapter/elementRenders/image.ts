@@ -19,5 +19,5 @@ export const image = (x, y, ctx: CanvasRenderingContext2D, config) => {
     return;
   }
 
-  ctx.drawImage(img, x, y, width, height);
+  ctx.drawImage(img, x + 0.5, y + 0.5, width, height);
 };

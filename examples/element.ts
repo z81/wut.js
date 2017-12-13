@@ -98,8 +98,8 @@ g2.use(Resizable());
 let rectIsSelected = false;
 
 el.on("mousedown", () => {
-  el.z = 1000;
-  el2.z = 0;
+  g.z = 1000;
+  g2.z = 0;
   rectIsSelected = !rectIsSelected;
 
   el.borderColor = rectIsSelected ? '#aaf' : '#ccc';
@@ -107,8 +107,8 @@ el.on("mousedown", () => {
 })
 
 el2.on("mousedown", () => {
-  el2.z = 1000;
-  el.z = 0;
+  g2.z = 1000;
+  g.z = 0;
 })
 
 

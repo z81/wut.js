@@ -5,6 +5,7 @@ import animDemo from "./animation";
 import dragableResizableDemo from "./draggable_resiazable";
 import windowDemo from "./window";
 import elementDemo from "./element";
+import editorDemo from "./editor";
 
 
 const getThisDemoId = () => (parseInt(document.location.hash.substr(1), 10) || 0);
@@ -33,6 +34,10 @@ const demos = [
   {
     name: "Element",
     demo: elementDemo
+  },
+  {
+    name: "Editor",
+    demo: editorDemo
   }
 ];
 
@@ -95,7 +100,7 @@ const render = timestamp => {
 
 const init = () => {
   getDemo().destroy();
-  renderer.clen();
+  renderer.clean();
 
   selectedDemoIdx = getThisDemoId();
   getDemo().init(renderer);

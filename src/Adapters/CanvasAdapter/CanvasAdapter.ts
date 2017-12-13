@@ -111,6 +111,10 @@ export default class CanvasAdapter {
       y += 0.5;
     }
 
+    if (element.z !== element.old_z) {
+      this.stage.sortZIndex();
+    }
+
     this.configureCanvas(element);
     elementRenders[element.type](x, y, this.ctx, element);
   }
@@ -166,7 +170,7 @@ export default class CanvasAdapter {
     this.stage.children.forEach(this.draw);
   }
 
-  clen() {
+  clean() {
     this.clear();
     this.stage.clear();
     this.eventListener.clear();

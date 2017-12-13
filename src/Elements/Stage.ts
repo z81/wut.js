@@ -9,17 +9,22 @@ const sortZIndex = (a, b) => {
 export class Stage {
   public children: ElementBase[] = [];
 
-  add = (element: ElementBase) => {
-    this.children.push(element);
+  public add = (element: ElementBase) => {
 
     if (element.type === 'group') {
       element.children.forEach(this.add)
     }
 
+    this.children.push(element);
+
+    this.sortZIndex();
+  }
+
+  public sortZIndex = () => {
     this.children = this.children.sort(sortZIndex);
   }
 
-  clear = () => {
+  public clear = () => {
     this.children.length = 0;
   }
 }
