@@ -14,6 +14,7 @@ const g2 = new Group(el2, d2);
 
 const l = new Line();
 
+
 el2.setProps({
   x: 300,
   y: 100,
@@ -97,10 +98,17 @@ g2.use(Resizable());
 let rectIsSelected = false;
 
 el.on("mousedown", () => {
+  el.z = 1000;
+  el2.z = 0;
   rectIsSelected = !rectIsSelected;
 
   el.borderColor = rectIsSelected ? '#aaf' : '#ccc';
   el.borderSize = rectIsSelected ? 2 : 1;
+})
+
+el2.on("mousedown", () => {
+  el2.z = 1000;
+  el.z = 0;
 })
 
 

@@ -26,7 +26,7 @@ export default class ElementBase implements ElementProps {
   public type: string = 'none';
   public x = 0;
   public y = 0;
-  public z = 0;
+  public old_z = 0;
   public width = 10;
   public height = 10;
   public borderSize = 1;
@@ -45,8 +45,18 @@ export default class ElementBase implements ElementProps {
   public font = '14px Georgia';
   public parent: ElementBase|null = null;
   public readonly mixins = {};
+  private _z = 0;
 
-  setProps(config?: ElementProps) {
+  public set z(z) {
+    this.old_z = this._z;
+    this._z = z;
+  }
+
+  public get z() {
+    return this._z;
+  }
+
+  public setProps(config?: ElementProps) {
     if (config) {
       for(const propName in config) {
         this[propName] = config[propName];
@@ -54,16 +64,16 @@ export default class ElementBase implements ElementProps {
     }
   }
 
-  setParent(parent: ElementBase) {
+  public setParent(parent: ElementBase) {
     this.parent = parent;
   }
 
-  moveTo(x: number, y: number) {
+  public moveTo(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
 
-  on(eventName: string, callback: Function) {
+  public on(eventName: string, callback: Function) {
     EventListener.on(eventName, (event, target) => {
       if (target !== this && target.parent !== this) return;
 
@@ -72,11 +82,11 @@ export default class ElementBase implements ElementProps {
     return this;
   }
 
-  fire(eventName: string, event: Event, target: any) {
+  public fire(eventName: string, event: Event, target: any) {
     EventListener.fire(eventName, event, target);
   }
 
-  use(mixin) {
+  public use(mixin) {
     const name = mixin.name.toLowerCase();
     this.mixins[name] = new mixin(this);
 
