@@ -106,7 +106,7 @@ export default class CanvasAdapter {
     let x = element.x;
     let y = element.y;
 
-    if (!this.antiAliasing) {
+    if (!this.antiAliasing && element.type !== 'circle') {
       x += 0.5;
       y += 0.5;
     }
