@@ -10,7 +10,7 @@ export const text = (x, y, ctx: CanvasRenderingContext2D, config: any) => {
   ctx.font = font;
 
   if (align) {
-    const textSize = this.ctx.measureText(text);
+    const textSize = ctx.measureText(text);
 
     if (align === "center") {
       x -= textSize.width / 2;

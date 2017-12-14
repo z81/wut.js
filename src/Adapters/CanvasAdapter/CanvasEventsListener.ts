@@ -7,8 +7,10 @@ class CanvasEventsListener {
     private canvasNode: HTMLCanvasElement;
     private eventsForWatch = ['mousemove', 'click', 'mouseup', 'mousedown'];
     private prevTarget: ElementBase|null = null;
+    private viewOffset = {x: 0, y: 0};
 
-    constructor(canvasNode: HTMLCanvasElement, stage: Stage) {
+    constructor(canvasNode: HTMLCanvasElement, stage: Stage, viewOffset) {
+        this.viewOffset = viewOffset;
         this.canvasNode = canvasNode;
         this.stage = stage;
         this.bindEventsListeners();
@@ -48,7 +50,10 @@ class CanvasEventsListener {
         const elementsOnCursor = [];
 
         for(let element of root) {
-            if (element.type !== 'group' && this.xray(element, event.offsetX, event.offsetY)) {
+            const x = event.offsetX - this.viewOffset.x;
+            const y = event.offsetY - this.viewOffset.y;
+
+            if (element.type !== 'group' && this.xray(element, x, y)) {
                 elementsOnCursor.push(element);
             }
         }

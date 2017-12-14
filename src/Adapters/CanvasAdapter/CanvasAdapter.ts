@@ -9,6 +9,10 @@ export default class CanvasAdapter {
   private canvasNode: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D|null;
   private eventListener: CanvasEventsListener;
+  private viewOffset = {
+    x: 0,
+    y: 0
+  };
   public antiAliasing: boolean = false;
   public stage: Stage|null = null;
 
@@ -43,7 +47,7 @@ export default class CanvasAdapter {
     this.initContext();
     this.autoSize();
     this.stage = new Stage();
-    this.eventListener = new CanvasEventsListener(this.canvasNode, this.stage);
+    this.eventListener = new CanvasEventsListener(this.canvasNode, this.stage, this.viewOffset);
     this.bindEvents();
     return this;
   }
@@ -152,6 +156,12 @@ export default class CanvasAdapter {
     // }
   }
 
+  setViewOffset({ x, y }) {
+    this.viewOffset.x = x; 
+    this.viewOffset.y = y; 
+    this.ctx.translate(x, y);
+  }
+
   /**
    * Clear all
    */
@@ -160,7 +170,7 @@ export default class CanvasAdapter {
       throw Error("2D Context is note defined");
     }
 
-    this.ctx.clearRect(0, 0, this.canvasNode.width, this.canvasNode.height);
+    this.ctx.clearRect(-this.viewOffset.x, -this.viewOffset.y, this.canvasNode.width, this.canvasNode.height);
   }
 
   /**
