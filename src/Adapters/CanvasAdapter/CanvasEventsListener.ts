@@ -94,6 +94,7 @@ class CanvasEventsListener {
             this.prevTarget = target;
         }
         
+        EventListener.fire(eventName, event, target);
 
         return false;
     }

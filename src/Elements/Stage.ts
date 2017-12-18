@@ -1,4 +1,5 @@
 import ElementBase from "./ElementBase";
+import EventListener from "../EventListener";
 
 const sortZIndex = (a, b) => {
   if (a.z > b.z) return 1;
@@ -21,6 +22,10 @@ export class Stage {
   
       this.sortZIndex();
     }
+  }
+
+  public on(eventName: string, callback: Function) {
+    EventListener.on(eventName, callback);
   }
 
   public sortZIndex = () => {

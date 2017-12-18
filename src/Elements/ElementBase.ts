@@ -75,7 +75,7 @@ export default class ElementBase implements ElementProps {
 
   public on(eventName: string, callback: Function) {
     EventListener.on(eventName, (event, target) => {
-      if (target !== this && target.parent !== this) return;
+      if (target === null || target !== this && target.parent !== this) return;
 
       return callback(event);
     });

@@ -40,6 +40,7 @@ const drag = (element, e) => {
     startDragPositions.set(element, [e.clientX, e.clientY]);
 
     moveElement(element, dx, dy);
+    element.fire('drag', e, element);
 };
 
 

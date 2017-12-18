@@ -56,13 +56,13 @@ export default class CanvasAdapter {
    * Bind events to canvas
    */
   private bindEvents(): void {
-    EventListener.on("mousemove", (event: Event, element: ElementBase) => {
-      this.setCursor(element.cursor);
-    });
+    // EventListener.on("mousemove", (event: Event, element: ElementBase) => {
+    //   this.setCursor(element.cursor);
+    // });
 
-    EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
-      this.setCursor(element.cursor);
-    });
+    // EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
+    //   this.setCursor(element.cursor);
+    // });
   }
 
   /**
