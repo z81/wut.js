@@ -148,5 +148,7 @@ export const line = (x, y, ctx: CanvasRenderingContext2D, config) => {
     prev = p;
   }
 
+  const lastItem = config.path[config.path.length - 1];
+  ctx.lineTo(lastItem[0], lastItem[1]);
   ctx.stroke();
 };

@@ -28,8 +28,16 @@ const moveElement = (element, dx, dy) => {
         return;
     }
 
-    element.x += dx;
-    element.y += dy;
+
+    if (element.type === 'line') {
+        for(let p of element['path']) {
+            p[0] += dx;
+            p[1] += dy;
+        }
+    } else {
+        element.x += dx;
+        element.y += dy;
+    }
 };
 
 

@@ -19,7 +19,10 @@ export interface ElementProps {
   align?: string;
   color?: string;
   radius?: number;
+  src?: string;
   borderRadius?: number;
+  fontSize?: number;
+  fontName?: string
 }
 
 export default class ElementBase implements ElementProps {

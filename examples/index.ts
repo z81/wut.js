@@ -51,7 +51,7 @@ const gui = new window["dat"].GUI();
 const getDemo = () => demos[selectedDemoIdx].demo;
 
 
-const selectDemo = idx => {
+const selectDemo = (idx: number) => {
   document.location.hash = `${idx}`;
 };
 
@@ -78,16 +78,18 @@ document.body.appendChild(stats.dom);
 
 
 // CRATE NODE
-const rootNode = document.getElementById("app");
+const rootNode: HTMLElement|null = document.getElementById("app");
 
 
 // INIT RENDERER
 const renderer = GraphicEngine.init("canvas");
-renderer.appendTo(rootNode);
-renderer.resize(1000, 900);
+if (rootNode) {
+  renderer.appendTo(rootNode);
+  renderer.resize(1000, 900);
+}
 
 // main render function
-const render = timestamp => {
+const render = (timestamp: number) => {
   stats.begin();
   renderer.clear();
   getDemo().render(timestamp, renderer);
@@ -110,6 +112,7 @@ const init = () => {
 window.addEventListener("hashchange", init, false)
 init();
 
+// tslint:disable
 window["selectDemo"] = selectDemo;
 
 const createRenderTimer = () =>
@@ -121,7 +124,7 @@ let thisRenderTimerIdx = createRenderTimer();
 //requestAnimationFrame(render);
 
 
-gui.add(text, "maxFps", 1, 100).onChange(function(value) {
+gui.add(text, "maxFps", 1, 100).onChange(function(value: number) {
   fps = value;
   clearInterval(thisRenderTimerIdx);
   thisRenderTimerIdx = createRenderTimer();
