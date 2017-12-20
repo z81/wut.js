@@ -59,7 +59,6 @@ class CanvasEventsListener {
             }
         }
 
-        
         event.elementsOnCursor = elementsOnCursor;
         const targets = elementsOnCursor;
         let target = null;

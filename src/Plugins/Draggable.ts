@@ -6,11 +6,9 @@ const startDragPositions = new Map();
 
 const startDrag = (element, handlers, e) => {
     if (handlers.length) {
-        const handlersONCursor = handlers.filter(h => e.elementsOnCursor.indexOf(h) !== -1);
-        // const isHandler = handlers.indexOf(e.elementsOnCursor[0]) !== -1;
+        const handlersONCursor = e.elementsOnCursor.filter(e => handlers.indexOf(e) !== -1);
         
-        console.log(handlersONCursor.length, handlers.length, handlersONCursor, handlers)
-        if (handlersONCursor.length !== handlers.length) {
+        if (handlersONCursor.length !== e.elementsOnCursor.length) {
             return;
         } 
     }
