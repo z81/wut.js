@@ -23,7 +23,9 @@ g.add(max);
 g.add(closeText);
 g.add(maxText);
 g.add(minText);
-g.use(Draggable(header)).use(Resizable(win));
+g.use(Draggable({
+  handlers: [header]
+})).use(Resizable(win));
 groupList.add(g);
 
 const updateWindow = (x, y, width, height) => {

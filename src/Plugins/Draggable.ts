@@ -1,10 +1,19 @@
 import MixinBase from './MixinBase';
+import { ElementBase } from '../../examples/editor/elements/ElementBase';
 
 const draggedElements = new Set();
 const startDragPositions = new Map();
 
-const startDrag = (element, handler, e) => {
-    if (handler && e.elementsOnCursor.indexOf(handler) === -1) return;
+const startDrag = (element, handlers, e) => {
+    if (handlers.length) {
+        const handlersONCursor = handlers.filter(h => e.elementsOnCursor.indexOf(h) !== -1);
+        // const isHandler = handlers.indexOf(e.elementsOnCursor[0]) !== -1;
+        
+        console.log(handlersONCursor.length, handlers.length, handlersONCursor, handlers)
+        if (handlersONCursor.length !== handlers.length) {
+            return;
+        } 
+    }
 
     startDragPositions.set(element, [e.clientX, e.clientY]);
     draggedElements.add(element);
@@ -71,12 +80,12 @@ document.addEventListener('mousemove', e => {
 });
 
 
-export function Draggable (handler?) {
+export function Draggable (config = {handlers: []}) {
     class Draggable extends MixinBase {
         constructor(element) {
             super();
-            element.on('mousedown', startDrag.bind(this, element, handler));
-            element.on('mouseup', stopDrag.bind(this, element, handler));
+            element.on('mousedown', startDrag.bind(this, element, config.handlers));
+            element.on('mouseup', stopDrag.bind(this, element, config.handlers));
         }
     }
 

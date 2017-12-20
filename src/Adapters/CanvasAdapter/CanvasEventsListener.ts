@@ -16,17 +16,18 @@ class CanvasEventsListener {
         this.bindEventsListeners();
     }
 
-    xray({ type, x, y, radius, width, height }: any, pointX: number, pointY: number) {
+    xray({ type, x, y, radius, width, height, borderSize = 0 }: any, pointX: number, pointY: number) {
         if (type === 'rect') {
             return (
-                (pointX >= x && pointX <= x + width) &&
-                (pointY >= y && pointY <= y + height)
+                (pointX >= x - borderSize && pointX <= x + width + borderSize) &&
+                (pointY >= y - borderSize && pointY <= y + height + borderSize)
             );
         }
 
         if (type === 'circle') {
             return (
-                Math.pow(pointX - x, 2) + Math.pow(pointY - y, 2) <= Math.pow(radius + 1, 2)
+                Math.pow(pointX - x - borderSize, 2) + 
+                Math.pow(pointY - y - borderSize, 2) <= Math.pow(radius + 1 + borderSize, 2)
             );
         }
 
