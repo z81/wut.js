@@ -30,19 +30,27 @@ const stopDrag = (element, handler, e) => {
     element.fire('dragend', e, element);
 };
 
+const roundNumber = (val, gridSize) => {
+    return Math.round(val / gridSize) * gridSize;
+}
 
-const moveElement = (element, dx, dy) => {
+const moveElement = (element, dx, dy, gridSize) => {
     if (element.type === 'group') {
-        element.children.forEach(el => moveElement(el, dx, dy));
+        element.children.forEach(el => moveElement(el, dx, dy, gridSize));
     } else 
     if (element.type === 'line') {
         for(let p of element['path']) {
             p[0] += dx;
             p[1] += dy;
+
+            p[0] = roundNumber(p[0], gridSize);
+            p[1] = roundNumber(p[1], gridSize);
         }
     } else {
         element.x += dx;
         element.y += dy;
+        element.x = roundNumber(element.x, gridSize);
+        element.y = roundNumber(element.y, gridSize);
     }
 };
 
@@ -74,12 +82,12 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
 
         private drag = (element, e) => {
             const [x, y] = startDragPositions.get(element);
-            const dx = Math.round((e.clientX - x) / config.gridSize) * config.gridSize;
-            const dy = Math.round((e.clientY - y) / config.gridSize) * config.gridSize;
+            const dx = e.clientX - x;
+            const dy = e.clientY - y;
             
             startDragPositions.set(element, [e.clientX, e.clientY]);
         
-            moveElement(element, dx, dy);
+            moveElement(element, dx, dy, config.gridSize);
             element.fire('drag', e, element);
         }
 
