@@ -40,17 +40,12 @@ const moveElement = (element, dx, dy, gridSize) => {
     } else 
     if (element.type === 'line') {
         for(let p of element['path']) {
-            p[0] += dx;
-            p[1] += dy;
-
-            p[0] = roundNumber(p[0], gridSize);
-            p[1] = roundNumber(p[1], gridSize);
+            p[0] = roundNumber(p[0] + dx, gridSize);
+            p[1] = roundNumber(p[1] + dy, gridSize);
         }
     } else {
-        element.x += dx;
-        element.y += dy;
-        element.x = roundNumber(element.x, gridSize);
-        element.y = roundNumber(element.y, gridSize);
+        element.x = roundNumber(element.x + dx, gridSize);
+        element.y = roundNumber(element.y + dy, gridSize);
     }
 };
 
