@@ -75,7 +75,6 @@ class CanvasEventsListener {
         for(let t of targets) {
             target = t;
             
-            // if (eventName === 'mousedown') debugger;
             if (this.fireEvent(eventName, event, target) === false) {
                 
                 break;
@@ -94,7 +93,9 @@ class CanvasEventsListener {
             this.prevTarget = target;
         }
         
-        EventListener.fire(eventName, event, target);
+        if (!target) {
+            EventListener.fire(eventName, event, target);
+        }
 
         return false;
     }

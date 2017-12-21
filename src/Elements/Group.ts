@@ -22,6 +22,10 @@ export class Group extends ElementBase {
             this.children.splice(itemPos + 1, 0, element);
         }
     }
+    
+    removeItem(element: ElementBase) {
+        this.children.splice(this.children.indexOf(element), 1);
+    }
 
     public type: string = 'group';
 }

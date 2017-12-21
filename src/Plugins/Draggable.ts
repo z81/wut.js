@@ -22,6 +22,8 @@ const startDrag = (element, handlers, e) => {
 
 
 const stopDrag = (element, handler, e) => {
+    if (!draggedElements.has(element)) return;
+
     draggedElements.delete(element);
     startDragPositions.delete(element);
 
