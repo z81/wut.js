@@ -179,10 +179,6 @@ export default class CanvasAdapter {
    */
   render = () => {
     this.stage.children.forEach(this.draw);
-    
-    if (this.requestRenderId) {
-      this.requestRenderId = requestAnimationFrame(this.render);
-    }
   }
 
   clean() {
@@ -192,6 +188,12 @@ export default class CanvasAdapter {
   }
 
   enableAutoRender() {
-    this.requestRenderId = requestAnimationFrame(this.render);
+    this.requestRenderId = requestAnimationFrame(this.autoRender);
+  }
+
+  autoRender = () => {
+    this.clear();
+    this.render();
+    this.enableAutoRender();
   }
 }
