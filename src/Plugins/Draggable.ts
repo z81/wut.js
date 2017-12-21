@@ -34,10 +34,7 @@ const stopDrag = (element, handler, e) => {
 const moveElement = (element, dx, dy) => {
     if (element.type === 'group') {
         element.children.forEach(el => moveElement(el, dx, dy));
-        return;
-    }
-
-
+    } else 
     if (element.type === 'line') {
         for(let p of element['path']) {
             p[0] += dx;
@@ -50,43 +47,42 @@ const moveElement = (element, dx, dy) => {
 };
 
 
-const drag = (element, e) => {
-    const [x, y] = startDragPositions.get(element);
-    const dx = e.clientX - x;
-    const dy = e.clientY - y;
-    startDragPositions.set(element, [e.clientX, e.clientY]);
-
-    moveElement(element, dx, dy);
-    element.fire('drag', e, element);
-};
-
-
-
-
-document.addEventListener('mousemove', e => {
-    draggedElements.forEach(element => {
-        if (!element.mixins.draggable.isEnabled) return;
-
-        if (e.buttons === 0) {
-            draggedElements.delete(element);
-        }
-
-        if (draggedElements.has(element)) {
-            drag(element, e);
-        }
-    });
-
-    return false;
-});
-
-
-export function Draggable (config = {handlers: []}) {
+export function Draggable (config = { handlers: [], gridSize: 1 }) {
     class Draggable extends MixinBase {
         constructor(element) {
             super();
+
             element.on('mousedown', startDrag.bind(this, element, config.handlers));
             element.on('mouseup', stopDrag.bind(this, element, config.handlers));
+            document.addEventListener('mousemove', this.globalMouseMove);
+            // Todo: descructor
         }
+
+        private globalMouseMove = (e) => {
+            draggedElements.forEach(element => {
+                if (!element.mixins.draggable.isEnabled) return;
+        
+                if (e.buttons === 0) {
+                    draggedElements.delete(element);
+                }
+        
+                if (draggedElements.has(element)) {
+                    this.drag(element, e);
+                }
+            });
+        }
+
+        private drag = (element, e) => {
+            const [x, y] = startDragPositions.get(element);
+            const dx = Math.round((e.clientX - x) / config.gridSize) * config.gridSize;
+            const dy = Math.round((e.clientY - y) / config.gridSize) * config.gridSize;
+            
+            startDragPositions.set(element, [e.clientX, e.clientY]);
+        
+            moveElement(element, dx, dy);
+            element.fire('drag', e, element);
+        }
+
     }
 
     return Draggable;
