@@ -15,6 +15,7 @@ export default class CanvasAdapter {
   };
   public antiAliasing: boolean = false;
   public stage: Stage|null = null;
+  private requestRenderId;
 
   /**
    * Create canvas element node
@@ -178,11 +179,19 @@ export default class CanvasAdapter {
    */
   render = () => {
     this.stage.children.forEach(this.draw);
+    
+    if (this.requestRenderId) {
+      this.requestRenderId = requestAnimationFrame(this.render);
+    }
   }
 
   clean() {
     this.clear();
     this.stage.clear();
     this.eventListener.clear();
+  }
+
+  enableAutoRender() {
+    this.requestRenderId = requestAnimationFrame(this.render);
   }
 }
