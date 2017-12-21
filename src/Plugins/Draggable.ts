@@ -34,22 +34,6 @@ const roundNumber = (val, gridSize) => {
     return Math.round(val / gridSize) * gridSize;
 }
 
-const moveElement = (element, dx, dy, gridSize) => {
-    if (element.type === 'group') {
-        element.children.forEach(el => moveElement(el, dx, dy, gridSize));
-    } else 
-    if (element.type === 'line') {
-        for(let p of element['path']) {
-            p[0] = roundNumber(p[0] + dx, gridSize);
-            p[1] = roundNumber(p[1] + dy, gridSize);
-        }
-    } else {
-        element.x = roundNumber(element.x + dx, gridSize);
-        element.y = roundNumber(element.y + dy, gridSize);
-    }
-};
-
-
 export function Draggable (config = { handlers: [], gridSize: 1 }) {
     class Draggable extends MixinBase {
         constructor(element) {
@@ -82,8 +66,33 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
             
             startDragPositions.set(element, [e.clientX, e.clientY]);
         
-            moveElement(element, dx, dy, config.gridSize);
+            this.moveElement(element, dx, dy, config.gridSize);
             element.fire('drag', e, element);
+        }
+
+        private moveElement = (element, dx, dy, gridSize) => {
+            if (element.type === 'group') {
+                element.children.forEach((el, idx) => {
+                    let xOld = el.x;
+                    let yOld = el.y;
+                    this.moveElement(el, dx, dy, gridSize);
+
+                    if (idx === 0) {
+                        dx += xOld - el.x;
+                        dy += yOld - el.y;
+                        gridSize = 1;
+                    }
+                });
+            } else 
+            if (element.type === 'line') {
+                for(let p of element['path']) {
+                    p[0] = roundNumber(p[0] + dx, gridSize);
+                    p[1] = roundNumber(p[1] + dy, gridSize);
+                }
+            } else {
+                element.x = roundNumber(element.x + dx, gridSize);
+                element.y = roundNumber(element.y + dy, gridSize);
+            }
         }
 
     }
