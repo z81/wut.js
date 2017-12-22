@@ -9,13 +9,12 @@ export const text = (x, y, ctx: CanvasRenderingContext2D, config: any) => {
   ctx.beginPath();
   ctx.font = font;
 
-  if (align) {
-    const textSize = ctx.measureText(text);
+  const textSize = ctx.measureText(text);
+  config.width = textSize.width;
 
-    if (align === "center") {
-      x -= textSize.width / 2;
-      y += fontSize / 2;
-    }
+  if (align === "center") {
+    x = Math.round(x - textSize.width / 2);
+    y = Math.round(y + fontSize / 2);
   }
 
   ctx.fillStyle = color;

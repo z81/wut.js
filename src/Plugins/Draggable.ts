@@ -3,6 +3,21 @@ import { ElementBase } from '../../examples/editor/elements/ElementBase';
 
 const draggedElements = new Set();
 const startDragPositions = new Map();
+const startDragElementPositions = {x: 0, y: 0};
+
+/**
+ * Определяет какой элемент является основным для перетаскивания
+ * необходимо для реализации сетки
+ * @param element 
+ * @param handlers 
+ */
+const getOffsetHandler = (element, handlers) => {
+    let offsetElement = element;
+    if (handlers.length) offsetElement = handlers[0];
+    if (element.type === 'group') offsetElement = element.children[0];
+
+    return offsetElement;
+}
 
 const startDrag = (element, handlers, e) => {
     if (handlers.length) {
@@ -16,12 +31,16 @@ const startDrag = (element, handlers, e) => {
     startDragPositions.set(element, [e.clientX, e.clientY]);
     draggedElements.add(element);
 
+    const offsetElement = getOffsetHandler(element, handlers);
+    startDragElementPositions.x = offsetElement.x * 1;
+    startDragElementPositions.y = offsetElement.y * 1;
+
     element.fire('dragstart', e, element);
     return false;
 };
 
 
-const stopDrag = (element, handler, e) => {
+const stopDrag = (element, handlers, e) => {
     if (!draggedElements.has(element)) return;
 
     draggedElements.delete(element);
@@ -60,38 +79,41 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
         }
 
         private drag = (element, e) => {
-            const [x, y] = startDragPositions.get(element);
-            const dx = e.clientX - x;
-            const dy = e.clientY - y;
+            const [startOffsetX, startOffsetY] = startDragPositions.get(element);
+            const x = roundNumber(startOffsetX - e.clientX - startDragElementPositions.x, config.gridSize);
+            const y = roundNumber(startOffsetY - e.clientY - startDragElementPositions.y, config.gridSize);
+            const offsetElement = getOffsetHandler(element, config.handlers);
+            const dx = Math.round(-offsetElement.x - x);
+            const dy = Math.round(-offsetElement.y - y);
+            // Для округеления позиций по сетки в группе необходимо учитывать что позиции там не относительные
+            // И применять округление нужно только к основному элементу, остальные же должны быть с отступом на основе 
+            // dx, dy позиции основного элемента
+
             
-            startDragPositions.set(element, [e.clientX, e.clientY]);
-        
-            this.moveElement(element, dx, dy, config.gridSize);
+            this.moveElement(element, dx, dy);
             element.fire('drag', e, element);
         }
 
-        private moveElement = (element, dx, dy, gridSize) => {
+        private moveElement = (element, dx, dy) => {
             if (element.type === 'group') {
                 element.children.forEach((el, idx) => {
-                    let xOld = el.x;
-                    let yOld = el.y;
-                    this.moveElement(el, dx, dy, gridSize);
+                    this.moveElement(el, dx, dy);
 
-                    if (idx === 0) {
-                        dx += xOld - el.x;
-                        dy += yOld - el.y;
-                        gridSize = 1;
-                    }
+                    // if (idx === 0) {
+                    //     dx += el.x - xOld;
+                    //     dy += el.y - yOld;
+                    //     gridSize = 1;
+                    // }
                 });
             } else 
             if (element.type === 'line') {
                 for(let p of element['path']) {
-                    p[0] = roundNumber(p[0] + dx, gridSize);
-                    p[1] = roundNumber(p[1] + dy, gridSize);
+                    p[0] = p[0] + dx;
+                    p[1] = p[1] + dy;
                 }
             } else {
-                element.x = roundNumber(element.x + dx, gridSize);
-                element.y = roundNumber(element.y + dy, gridSize);
+                element.x = element.x + dx;
+                element.y = element.y + dy;
             }
         }
 

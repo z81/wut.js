@@ -5,7 +5,7 @@ import { Stage } from '../../Elements/Stage';
 class CanvasEventsListener {
     private stage: Stage|null;
     private canvasNode: HTMLCanvasElement;
-    private eventsForWatch = ['mousemove', 'click', 'mouseup', 'mousedown'];
+    private eventsForWatch = ['mousemove', 'click', 'mouseup', 'mousedown', 'dblclick'];
     private prevTarget: ElementBase|null = null;
     private viewOffset = {x: 0, y: 0};
 
@@ -16,11 +16,24 @@ class CanvasEventsListener {
         this.bindEventsListeners();
     }
 
-    xray({ type, x, y, radius, width, height, borderSize = 0 }: any, pointX: number, pointY: number) {
+    xray({ type, x, y, radius, width, height, borderSize = 0, fontSize, align }: any, pointX: number, pointY: number) {
         if (type === 'rect') {
             return (
                 (pointX >= x - borderSize && pointX <= x + width + borderSize) &&
                 (pointY >= y - borderSize && pointY <= y + height + borderSize)
+            );
+        }
+
+        if (type === 'text') {
+            if (align === "center") {
+                x -= width / 2;
+            }
+
+            y -= fontSize;
+
+            return (
+                (pointX >= x - 3 && pointX <= x + width + 3) &&
+                (pointY >= y - 3 && pointY <= y + fontSize + 3)
             );
         }
 
