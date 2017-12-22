@@ -53,6 +53,8 @@ const roundNumber = (val, gridSize) => {
     return Math.round(val / gridSize) * gridSize;
 }
 
+let globalMoseMoveEventEnabled = false;
+
 export function Draggable (config = { handlers: [], gridSize: 1 }) {
     class Draggable extends MixinBase {
         constructor(element) {
@@ -60,7 +62,11 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
 
             element.on('mousedown', startDrag.bind(this, element, config.handlers));
             element.on('mouseup', stopDrag.bind(this, element, config.handlers));
-            document.addEventListener('mousemove', this.globalMouseMove);
+
+            if (!globalMoseMoveEventEnabled) {
+                document.addEventListener('mousemove', this.globalMouseMove);
+                globalMoseMoveEventEnabled = true;
+            }
             // Todo: descructor
         }
 
@@ -85,6 +91,7 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
             const offsetElement = getOffsetHandler(element, config.handlers);
             const dx = Math.round(-offsetElement.x - x);
             const dy = Math.round(-offsetElement.y - y);
+            console.log(x, y, config.gridSize, element)
             // Для округеления позиций по сетки в группе необходимо учитывать что позиции там не относительные
             // И применять округление нужно только к основному элементу, остальные же должны быть с отступом на основе 
             // dx, dy позиции основного элемента
