@@ -16,46 +16,50 @@ let resizeDirection = DIRECTION.NONE;
 let resizeStartPosition = [];
 
 
-const changeOffsetSizeAndPos = (element, offsetWidth, offsetHeight, offsetX = 0, offsetY = 0) => {
+const changeOffsetSizeAndPos = (element, offsetWidth, offsetHeight, canvasOffsetX = 0, canvasOffsetY = 0) => {
     if (element.type === 'group') {
-        element.children.forEach(el => changeOffsetSizeAndPos(el, offsetWidth, offsetHeight, offsetX, offsetY));
+        element.children.forEach(el => changeOffsetSizeAndPos(el, offsetWidth, offsetHeight, canvasOffsetX, canvasOffsetY));
         return;
     }
 
     element.width += offsetWidth;
     element.height += offsetHeight;
-    element.x += offsetX;
-    element.y += offsetY;
+    element.x += canvasOffsetX;
+    element.y += canvasOffsetY;
 };
 
-document.addEventListener('mouseup', () => {
+document.addEventListener('mouseup', (e) => {
     if (resizableElement !== null && resizableElement.mixins.draggable) {
         resizableElement.mixins.draggable.enable();
+    }
+
+    if (resizableElement !== null) {
+        resizableElement.fire('resizeend', e, resizableElement);
     }
 
     resizableElement = null;
 }, false);
 
 
-document.addEventListener('mousemove', ({ offsetX, offsetY }) => {
+document.addEventListener('mousemove', ({ canvasOffsetX, canvasOffsetY }) => {
     if (resizableElement !== null) {
         const [x, y] = resizeStartPosition;
 
         if (resizeDirection & DIRECTION.RIGHT) {
-            changeOffsetSizeAndPos(resizableElement, offsetX - x, 0);
+            changeOffsetSizeAndPos(resizableElement, canvasOffsetX - x, 0);
         }
         else if (resizeDirection & DIRECTION.LEFT) {
-            changeOffsetSizeAndPos(resizableElement, x - offsetX, 0, offsetX - x);
+            changeOffsetSizeAndPos(resizableElement, x - canvasOffsetX, 0, canvasOffsetX - x);
         }
         if (resizeDirection & DIRECTION.BOTTOM) {
-            changeOffsetSizeAndPos(resizableElement, 0, offsetY - y);
+            changeOffsetSizeAndPos(resizableElement, 0, canvasOffsetY - y);
         }
         else if (resizeDirection & DIRECTION.TOP) {
-            changeOffsetSizeAndPos(resizableElement, 0, y - offsetY, 0, offsetY - y);
+            changeOffsetSizeAndPos(resizableElement, 0, y - canvasOffsetY, 0, canvasOffsetY - y);
         }
 
-        resizeStartPosition[0] = offsetX;
-        resizeStartPosition[1] = offsetY;
+        resizeStartPosition[0] = canvasOffsetX;
+        resizeStartPosition[1] = canvasOffsetY;
         return;
     }
 }, false);
@@ -100,7 +104,7 @@ export function Resizable (handler?) {
             element.on('mousedown', e => {
                 if (handler && e.canvasTarget !== handler && e.canvasTarget !== handler.parent) return;
 
-                const direction = getDirection(handler || e.canvasTarget, e.offsetX, e.offsetY);
+                const direction = getDirection(handler || e.canvasTarget, e.canvasOffsetX, e.canvasOffsetY);
 
                 if (e.buttons > 0 && direction !== DIRECTION.NONE) {
                     if (element.mixins.draggable) {
@@ -109,16 +113,16 @@ export function Resizable (handler?) {
 
                     resizeDirection = direction;
                     resizableElement = element;
-                    resizeStartPosition = [e.offsetX, e.offsetY];
+                    resizeStartPosition = [e.canvasOffsetX, e.canvasOffsetY];
                 }
 
             });
 
-            element.on('mousemove', ({ offsetX, offsetY, canvasTarget, elementsOnCursor }) => {
+            element.on('mousemove', ({ canvasOffsetX, canvasOffsetY, canvasTarget, elementsOnCursor }) => {
                 if (handler && canvasTarget !== handler && canvasTarget !== handler.parent) return;
                 if (resizableElement !== null) return;
 
-                const direction = getDirection(canvasTarget, offsetX, offsetY);
+                const direction = getDirection(canvasTarget, canvasOffsetX, canvasOffsetY);
                 let cursor = '';
 
                 if (direction & DIRECTION.LEFT) cursor = 'w-resize';

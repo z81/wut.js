@@ -1,3 +1,4 @@
+import Rect from '../Elements/Rect';
 import MixinBase from './MixinBase';
 import { ElementBase } from '../../examples/editor/elements/ElementBase';
 
@@ -55,7 +56,12 @@ const roundNumber = (val, gridSize) => {
 
 let globalMoseMoveEventEnabled = false;
 
-export function Draggable (config = { handlers: [], gridSize: 1 }) {
+interface IDragHArguments {
+    handlers: Rect[],
+    gridSize: number
+}
+
+export function Draggable (config: IDragHArguments = { handlers: [], gridSize: 1 }) {
     class Draggable extends MixinBase {
         constructor(element) {
             super();
@@ -91,7 +97,6 @@ export function Draggable (config = { handlers: [], gridSize: 1 }) {
             const offsetElement = getOffsetHandler(element, config.handlers);
             const dx = Math.round(-offsetElement.x - x);
             const dy = Math.round(-offsetElement.y - y);
-            console.log(x, y, config.gridSize, element)
             // Для округеления позиций по сетки в группе необходимо учитывать что позиции там не относительные
             // И применять округление нужно только к основному элементу, остальные же должны быть с отступом на основе 
             // dx, dy позиции основного элемента

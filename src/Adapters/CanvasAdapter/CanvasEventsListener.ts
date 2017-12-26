@@ -27,9 +27,10 @@ class CanvasEventsListener {
         if (type === 'text') {
             if (align === "center") {
                 x -= width / 2;
+                y -= fontSize / 2;
+            } else {
+                y -= fontSize;
             }
-
-            y -= fontSize;
 
             return (
                 (pointX >= x - 3 && pointX <= x + width + 3) &&
@@ -63,10 +64,13 @@ class CanvasEventsListener {
     eventHandler = (eventName: string, event, root = this.stage.children, isGroup = false) => {
         const elementsOnCursor = [];
 
-        for(let element of root) {
-            const x = event.offsetX - this.viewOffset.x;
-            const y = event.offsetY - this.viewOffset.y;
+        const x = event.offsetX - this.viewOffset.x;
+        const y = event.offsetY - this.viewOffset.y;
 
+        event.canvasOffsetX = x;
+        event.canvasOffsetY = y;
+
+        for(let element of root) {
             if (element.type !== 'group' && this.xray(element, x, y)) {
                 elementsOnCursor.push(element);
             }

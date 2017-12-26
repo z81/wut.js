@@ -22,7 +22,8 @@ export interface ElementProps {
   src?: string;
   borderRadius?: number;
   fontSize?: number;
-  fontName?: string
+  fontName?: string;
+  ref?: any;
 }
 
 export default class ElementBase implements ElementProps {
@@ -47,6 +48,7 @@ export default class ElementBase implements ElementProps {
   public borderRadius = 0;
   public font = '14px Georgia';
   public parent: ElementBase|null = null;
+  public ref: any;
   public readonly mixins = {};
   private _z = 0;
 
@@ -78,7 +80,7 @@ export default class ElementBase implements ElementProps {
 
   public on(eventName: string, callback: Function) {
     EventListener.on(eventName, (event, target) => {
-      if (target === null || target !== this && target.parent !== this) return;
+      if (target === null || target !== this && target.parent && target.parent !== this) return;
 
       return callback(event);
     });
