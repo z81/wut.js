@@ -9,9 +9,9 @@ const sortZIndex = (a, b) => {
 
 export class Stage {
   public children: ElementBase[] = [];
+  public elements;
 
   public add = (...elements: ElementBase[]) => {
-
     for(let element of elements) {
       // Элементы группы должны быть выше в списке отрисовки
       if (element.type === 'group') {
@@ -30,6 +30,10 @@ export class Stage {
 
   public sortZIndex = () => {
     this.children = this.children.sort(sortZIndex);
+  }
+
+  public removeItem(element: ElementBase) {
+    this.children.splice(this.children.indexOf(element), 1);
   }
 
   public clear = () => {

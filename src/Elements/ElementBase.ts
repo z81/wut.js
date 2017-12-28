@@ -1,29 +1,29 @@
 import EventListener from "../EventListener";
 
 export interface ElementProps {
-  x?: number;
-  y?: number;
-  z?: number;
-  width?: number;
-  height?: number;
-  borderSize?: number;
-  borderColor?: string;
-  background?: string;
-  cursor?: string;
-  rotate?: number;
-  aimationType?: any;
-  children?: any;
-  id?: any;
-  text?: string;
-  font?: string;
-  align?: string;
-  color?: string;
-  radius?: number;
-  src?: string;
-  borderRadius?: number;
-  fontSize?: number;
-  fontName?: string;
-  ref?: any;
+  x?: number|Function;
+  y?: number|Function;
+  z?: number|Function;
+  width?: number|Function;
+  height?: number|Function;
+  borderSize?: number|Function;
+  borderColor?: string|Function;
+  background?: string|Function;
+  cursor?: string|Function;
+  rotate?: number|Function;
+  aimationType?: any|Function;
+  children?: any|Function;
+  id?: any|Function;
+  text?: string|Function;
+  font?: string|Function;
+  align?: string|Function;
+  color?: string|Function;
+  radius?: number|Function;
+  src?: string|Function;
+  borderRadius?: number|Function;
+  fontSize?: number|Function;
+  fontName?: string|Function;
+  ref?: any|Function;
 }
 
 export default class ElementBase implements ElementProps {
@@ -63,8 +63,17 @@ export default class ElementBase implements ElementProps {
 
   public setProps(config?: ElementProps) {
     if (config) {
-      for(const propName in config) {
-        this[propName] = config[propName];
+      for(const propertyName in config) {
+        const property = config[propertyName];
+
+        if (typeof property === 'function') {
+          Object.defineProperty(this, propertyName, {
+            get: property,
+            set: value => this.fire('change', { propertyName, value }, this)
+          });
+        } else {
+          this[propertyName] = config[propertyName];
+        }
       }
     }
   }
@@ -96,5 +105,9 @@ export default class ElementBase implements ElementProps {
     this.mixins[name] = new mixin(this);
 
     return this;
+  }
+
+  public inj(...a) {
+    console.log(a)
   }
 }

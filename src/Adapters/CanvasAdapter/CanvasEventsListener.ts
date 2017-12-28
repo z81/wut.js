@@ -16,7 +16,7 @@ class CanvasEventsListener {
         this.bindEventsListeners();
     }
 
-    xray({ type, x, y, radius, width, height, borderSize = 0, fontSize, align }: any, pointX: number, pointY: number) {
+    public xray({ type, x, y, radius, width, height, borderSize = 0, fontSize, align }: any, pointX: number, pointY: number) {
         if (type === 'rect') {
             return (
                 (pointX >= x - borderSize && pointX <= x + width + borderSize) &&
@@ -49,7 +49,7 @@ class CanvasEventsListener {
         return false;
     }
 
-    fireEvent(eventName: string, event: Event, element: ElementBase): boolean|void {
+    public fireEvent(eventName: string, event: Event, element: ElementBase): boolean|void {
         if (EventListener.fire(eventName, event, element) === false) return false;
 
         if (element.type === 'group') {
@@ -61,7 +61,7 @@ class CanvasEventsListener {
         }
     }
 
-    eventHandler = (eventName: string, event, root = this.stage.children, isGroup = false) => {
+    public eventHandler = (eventName: string, event, root = this.stage.children, isGroup = false) => {
         const elementsOnCursor = [];
 
         const x = event.offsetX - this.viewOffset.x;
@@ -117,14 +117,14 @@ class CanvasEventsListener {
         return false;
     }
 
-    bindEventsListeners() {
+    private bindEventsListeners() {
         this.eventsForWatch.forEach(eventName => {
             const handler = this.eventHandler.bind(this, eventName);
             this.canvasNode.addEventListener(eventName, handler, false);
         });
     }
 
-    clear() {
+    public clear() {
         this.prevTarget = null;
     }
 }

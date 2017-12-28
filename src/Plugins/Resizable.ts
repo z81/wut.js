@@ -1,4 +1,5 @@
 import MixinBase from './MixinBase';
+import { ICanvasMouseEvent } from '../ICanvasMousEvent';
 
 
 const resizeAreaSize = 10;
@@ -41,7 +42,7 @@ document.addEventListener('mouseup', (e) => {
 }, false);
 
 
-document.addEventListener('mousemove', ({ canvasOffsetX, canvasOffsetY }) => {
+document.addEventListener('mousemove', ({ canvasOffsetX, canvasOffsetY }: ICanvasMouseEvent) => {
     if (resizableElement !== null) {
         const [x, y] = resizeStartPosition;
 
