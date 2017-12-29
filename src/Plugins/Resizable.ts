@@ -23,8 +23,12 @@ const changeOffsetSizeAndPos = (element, offsetWidth, offsetHeight, canvasOffset
         return;
     }
 
-    element.width += offsetWidth;
-    element.height += offsetHeight;
+    if (element.width + offsetWidth > element.minWidth) {
+        element.width += offsetWidth;
+    }
+    if (element.height + offsetHeight > element.minHeight) {
+        element.height += offsetHeight;
+    }
     element.x += canvasOffsetX;
     element.y += canvasOffsetY;
 };

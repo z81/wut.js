@@ -25,6 +25,8 @@ export interface ElementProps {
   fontName?: string|Function;
   ref?: any|Function;
   isHidden?: boolean;
+  minWidth?: number|Function;
+  minHeight?: number|Function;
 }
 
 export default class ElementBase implements ElementProps {
@@ -51,6 +53,8 @@ export default class ElementBase implements ElementProps {
   public parent: ElementBase|null = null;
   public ref: any;
   public isHidden: boolean = false;
+  public minHeight: number = 10;
+  public minWidth: number = 10;
   public readonly mixins = {};
   private _z = 0;
 
