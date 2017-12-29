@@ -65,60 +65,66 @@ class CanvasEventsListener {
         }
     }
 
-    public eventHandler = (eventName: string, event, root = this.stage.children, isGroup = false) => {
-        const elementsOnCursor = [];
-
+    public eventHandler = (eventName: string, event, root = this.stage.children) => {
         const x = event.offsetX - this.viewOffset.x;
         const y = event.offsetY - this.viewOffset.y;
+        const isRoot = (root === this.stage.children);
 
         event.canvasOffsetX = x;
         event.canvasOffsetY = y;
+        event.canvasTarget = null;
+
+        if (isRoot) {
+            event.elementsOnCursor = [];
+        }
 
         for(let element of root) {
-            if (element.type !== 'group' && this.xray(element, x, y)) {
-                elementsOnCursor.push(element);
+            if (element.type === 'group') {
+                const inGroup = this.eventHandler(eventName, event, element.children);
+                if (inGroup === true) {
+                    event.elementsOnCursor.push(element);
+                }
+            } else if (this.xray(element, x, y)) {
+                event.elementsOnCursor.push(element);
             }
         }
 
-        event.elementsOnCursor = elementsOnCursor;
-        const targets = elementsOnCursor;
         let target = null;
-        
-        if (targets.length > 0) {
-            target = targets[0];
+
+        if (event.elementsOnCursor.length > 0 && isRoot) {
+            target = event.elementsOnCursor[event.elementsOnCursor.length - 1];
+
+            for(let i = event.elementsOnCursor.length - 1; i >= 0; i--) {
+                event.canvasTarget = event.elementsOnCursor[i];
+                EventListener.fire(eventName, event, event.canvasTarget);
+            }
+        } else {
+            // EventListener.fire(eventName, event, event.canvasTarget)
         }
 
-        if (isGroup) {
-            return !!target;
-        }
 
+        if (isRoot) {
+            const isGroup = (target && target.type === 'group');
+            if (!isGroup && target !== this.prevTarget) {
+                if (this.prevTarget !== null) {
+                    EventListener.fire('mouseleave', event, this.prevTarget);
+                }
 
-        for(let t of targets) {
-            target = t;
-            
-            if (this.fireEvent(eventName, event, target) === false) {
-                
-                break;
+                if (target !== null) {
+                    EventListener.fire('mouseenter', event, target);
+                    
+                }
+
+                this.prevTarget = target;
+            }
+
+            if (target === null) {
+                EventListener.fire(eventName, event, null)
             }
         }
 
 
-        if (!isGroup && target !== this.prevTarget) {
-            if (this.prevTarget !== null) {
-                EventListener.fire('mouseleave', event, this.prevTarget);
-            }
-            if (target !== null) {
-                EventListener.fire('mouseenter', event, target);
-            }
-
-            this.prevTarget = target;
-        }
-        
-        if (!target) {
-            EventListener.fire(eventName, event, target);
-        }
-
-        return false;
+        return null;
     }
 
     private bindEventsListeners() {

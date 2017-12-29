@@ -26,11 +26,14 @@ export class Group extends ElementBase {
     }
     
     public removeItem(element: ElementBase) {
-        this.children.splice(this.children.indexOf(element), 1);
-        
-        if (this.stage) {
-            this.stage.removeItem(element);
+        const index = this.children.indexOf(element);
+        if (index > -1) {
+            this.children.splice(index, 1);
         }
+        
+        // if (this.stage) {
+        //     this.stage.removeItem(element);
+        // }
     }
 
     public type: string = 'group';

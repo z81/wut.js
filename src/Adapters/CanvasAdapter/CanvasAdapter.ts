@@ -41,7 +41,7 @@ export default class CanvasAdapter {
    * append canvas to htlm element
    * @param CanvasAdapter 
    */
-  appendTo(elementNode: HTMLElement): CanvasAdapter {
+  public appendTo(elementNode: HTMLElement): CanvasAdapter {
     this.elementNode = elementNode;
 
     this.createCanvas();
@@ -69,7 +69,7 @@ export default class CanvasAdapter {
   /**
    * Auth resize canvas
    */
-  autoSize(): void {
+  public autoSize(): void {
     const { width, height } = this.elementNode.getBoundingClientRect();
     this.resize(width, height);
   }
@@ -79,7 +79,7 @@ export default class CanvasAdapter {
    * @param width 
    * @param height 
    */
-  resize(width: number, height: number): CanvasAdapter {
+  public resize(width: number, height: number): CanvasAdapter {
     this.canvasNode.width = width;
     this.canvasNode.height = height;
 
@@ -90,7 +90,7 @@ export default class CanvasAdapter {
    * Set cursor
    * @param cursor css cursor propery value
    */
-  setCursor(cursor: string): void {
+  public setCursor(cursor: string): void {
     this.canvasNode.style.cursor = cursor;
   }
 
@@ -99,7 +99,7 @@ export default class CanvasAdapter {
    * @param element CanvasElement
    * @param i index
    */
-  draw = (element: ElementBase, i: number) => {
+  public draw = (element: ElementBase, i: number) => {
     if (element.isHidden) {
       return;
     }
@@ -162,9 +162,9 @@ export default class CanvasAdapter {
   }
 
   setViewOffset({ x, y }) {
+    this.ctx.translate(x - this.viewOffset.x, y - this.viewOffset.y);
     this.viewOffset.x = x; 
     this.viewOffset.y = y; 
-    this.ctx.translate(x, y);
   }
 
   /**
