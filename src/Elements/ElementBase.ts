@@ -24,6 +24,7 @@ export interface ElementProps {
   fontSize?: number|Function;
   fontName?: string|Function;
   ref?: any|Function;
+  isHidden?: boolean;
 }
 
 export default class ElementBase implements ElementProps {
@@ -49,6 +50,7 @@ export default class ElementBase implements ElementProps {
   public font = '14px Georgia';
   public parent: ElementBase|null = null;
   public ref: any;
+  public isHidden: boolean = false;
   public readonly mixins = {};
   private _z = 0;
 

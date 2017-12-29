@@ -16,7 +16,11 @@ class CanvasEventsListener {
         this.bindEventsListeners();
     }
 
-    public xray({ type, x, y, radius, width, height, borderSize = 0, fontSize, align }: any, pointX: number, pointY: number) {
+    public xray({ type, x, y, radius, width, height, borderSize = 0, fontSize, align, isHidden }: any, pointX: number, pointY: number) {
+        if (isHidden) {
+            return false;
+        }
+        
         if (type === 'rect') {
             return (
                 (pointX >= x - borderSize && pointX <= x + width + borderSize) &&

@@ -100,6 +100,10 @@ export default class CanvasAdapter {
    * @param i index
    */
   draw = (element: ElementBase, i: number) => {
+    if (element.isHidden) {
+      return;
+    }
+
     if (this.ctx === null) {
       throw Error("2D Context is note defined");
     }
