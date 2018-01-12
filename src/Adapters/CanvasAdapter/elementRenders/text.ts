@@ -4,11 +4,10 @@
  * @param config
  */
 export const text = (x, y, ctx: CanvasRenderingContext2D, config: any) => {
-  let { text, color, fontName, fontSize, align } = config;
+  let { text, color, font, fontSize, align } = config;
 
   ctx.beginPath();
-  // console.log(fontName, fontSize);
-  ctx.font = `normal normal lighter ${fontName} ${fontSize}`;
+  ctx.font = `normal normal lighter ${font}`;
 
   const textSize = ctx.measureText(text);
   config.width = textSize.width;
