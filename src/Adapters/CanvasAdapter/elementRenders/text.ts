@@ -7,7 +7,8 @@ export const text = (x, y, ctx: CanvasRenderingContext2D, config: any) => {
   let { text, color, fontName, fontSize, align } = config;
 
   ctx.beginPath();
-  ctx.font = `normal normal lighter ${fontName}`;
+  // console.log(fontName, fontSize);
+  ctx.font = `normal normal lighter ${fontName} ${fontSize}`;
 
   const textSize = ctx.measureText(text);
   config.width = textSize.width;
