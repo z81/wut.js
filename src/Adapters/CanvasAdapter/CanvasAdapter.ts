@@ -49,14 +49,14 @@ export default class CanvasAdapter {
     this.autoSize();
     this.stage = new Stage();
     this.eventListener = new CanvasEventsListener(this.canvasNode, this.stage, this.viewOffset);
-    this.bindEvents();
+    // this.bindEvents();
     return this;
   }
 
   /**
    * Bind events to canvas
    */
-  private bindEvents(): void {
+  // private bindEvents(): void {
     // EventListener.on("mousemove", (event: Event, element: ElementBase) => {
     //   this.setCursor(element.cursor);
     // });
@@ -64,7 +64,7 @@ export default class CanvasAdapter {
     // EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
     //   this.setCursor(element.cursor);
     // });
-  }
+  // }
 
   /**
    * Auth resize canvas
@@ -133,7 +133,7 @@ export default class CanvasAdapter {
    * Set paramenters to canvas
    * @param config canvas parameters
    */
-  configureCanvas({
+  public configureCanvas({
     x,
     y,
     width,
@@ -161,7 +161,7 @@ export default class CanvasAdapter {
     // }
   }
 
-  setViewOffset({ x, y }) {
+  public setViewOffset({ x, y }) {
     this.ctx.translate(x - this.viewOffset.x, y - this.viewOffset.y);
     this.viewOffset.x = x; 
     this.viewOffset.y = y; 
@@ -170,7 +170,7 @@ export default class CanvasAdapter {
   /**
    * Clear all
    */
-  clear() {
+  public clear() {
     if (this.ctx === null) {
       throw Error("2D Context is note defined");
     }
@@ -181,21 +181,21 @@ export default class CanvasAdapter {
   /**
    * Render stage
    */
-  render = () => {
+  public render = () => {
     this.stage.children.forEach(this.draw);
   }
 
-  clean() {
+  public clean() {
     this.clear();
     this.stage.clear();
     this.eventListener.clear();
   }
 
-  enableAutoRender() {
+  public enableAutoRender() {
     this.requestRenderId = requestAnimationFrame(this.autoRender);
   }
 
-  autoRender = () => {
+  public autoRender = () => {
     this.clear();
     this.render();
     this.enableAutoRender();
