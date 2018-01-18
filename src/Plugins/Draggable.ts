@@ -124,6 +124,8 @@ export function Draggable (config: IDragHArguments = { handlers: [], gridSize: 1
                     p[1] = p[1] + dy;
                 }
             } else {
+                element.fire('dragBeforeMove', { dx, dy });
+
                 element.x = element.x + dx;
                 element.y = element.y + dy;
             }
