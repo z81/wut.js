@@ -196,8 +196,11 @@ export default class CanvasAdapter {
   }
 
   public autoRender = () => {
-    this.clear();
-    this.render();
+    if (this.ctx) {
+      this.clear();
+      this.render();
+    }
+    
     this.enableAutoRender();
   }
 }
