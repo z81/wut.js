@@ -1,36 +1,40 @@
 import EventListener from "../EventListener";
 
+export interface IEventProperyChange {
+  propertyName;
+  value;
+}
 export interface ElementProps {
-  x?: number|Function;
-  y?: number|Function;
-  z?: number|Function;
-  width?: number|Function;
-  height?: number|Function;
-  borderSize?: number|Function;
-  borderColor?: string|Function;
-  background?: string|Function;
-  cursor?: string|Function;
-  rotate?: number|Function;
-  aimationType?: any|Function;
-  children?: any|Function;
-  id?: any|Function;
-  text?: string|Function;
-  font?: string|Function;
-  align?: string|Function;
-  color?: string|Function;
-  radius?: number|Function;
-  src?: string|Function;
-  borderRadius?: number|Function;
-  fontSize?: number|Function;
-  fontName?: string|Function;
-  ref?: any|Function;
+  x?: number | Function;
+  y?: number | Function;
+  z?: number | Function;
+  width?: number | Function;
+  height?: number | Function;
+  borderSize?: number | Function;
+  borderColor?: string | Function;
+  background?: string | Function;
+  cursor?: string | Function;
+  rotate?: number | Function;
+  aimationType?: any | Function;
+  children?: any | Function;
+  id?: any | Function;
+  text?: string | Function;
+  font?: string | Function;
+  align?: string | Function;
+  color?: string | Function;
+  radius?: number | Function;
+  src?: string | Function;
+  borderRadius?: number | Function;
+  fontSize?: number | Function;
+  fontName?: string | Function;
+  ref?: any | Function;
   isHidden?: boolean;
-  minWidth?: number|Function;
-  minHeight?: number|Function;
+  minWidth?: number | Function;
+  minHeight?: number | Function;
 }
 
 export default class ElementBase implements ElementProps {
-  public type: string = 'none';
+  public type: string = "none";
   public x = 0;
   public y = 0;
   public old_z = 0;
@@ -43,14 +47,14 @@ export default class ElementBase implements ElementProps {
   public rotate = 0;
   public aimationType = "easeOutQuint";
   public children = [];
-  public id = '';
-  public text = '';
-  public align = '';
-  public color = '#fff';
+  public id = "";
+  public text = "";
+  public align = "";
+  public color = "#fff";
   public radius = 0;
   public borderRadius = 0;
-  public font = '14px Georgia';
-  public parent: ElementBase|null = null;
+  public font = "14px Georgia";
+  public parent: ElementBase | null = null;
   public ref: any;
   public isHidden: boolean = false;
   public minHeight: number = 10;
@@ -69,13 +73,13 @@ export default class ElementBase implements ElementProps {
 
   public setProps(config?: ElementProps) {
     if (config) {
-      for(const propertyName in config) {
+      for (const propertyName in config) {
         const property = config[propertyName];
 
-        if (typeof property === 'function') {
+        if (typeof property === "function") {
           Object.defineProperty(this, propertyName, {
             get: property,
-            set: value => this.fire('change', { propertyName, value }, this)
+            set: value => this.fire("change", { propertyName, value }, this)
           });
         } else {
           this[propertyName] = config[propertyName];
@@ -95,14 +99,15 @@ export default class ElementBase implements ElementProps {
 
   public on(eventName: string, callback: Function) {
     EventListener.on(eventName, (event, target) => {
-      if (target === null || target !== this && target.parent && target.parent !== this) return;
+      if (target === null || (target !== this && target.parent && target.parent !== this))
+        return;
 
       return callback(event);
     });
     return this;
   }
 
-  public fire(eventName: string, event: Event, target: any) {
+  public fire(eventName: string, event: IEventProperyChange, target: any) {
     EventListener.fire(eventName, event, target);
   }
 
@@ -114,6 +119,6 @@ export default class ElementBase implements ElementProps {
   }
 
   public inj(...a) {
-    console.log(a)
+    console.log(a);
   }
 }
