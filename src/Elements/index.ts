@@ -4,3 +4,4 @@ export * from "./Group";
 export * from "./Rect";
 export * from "./Image";
 export * from "./Line";
+export * from "./Stage";
