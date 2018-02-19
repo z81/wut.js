@@ -57,7 +57,7 @@ let globalMoseMoveEventEnabled = false;
 
 interface IDragHArguments {
   handlers: Rect[];
-  gridSize: number;
+  gridSize?: number;
 }
 
 export function Draggable(config: IDragHArguments = { handlers: [], gridSize: 1 }) {

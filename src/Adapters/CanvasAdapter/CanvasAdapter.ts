@@ -1,20 +1,20 @@
 import CanvasEventsListener from "./CanvasEventsListener";
 import EventListener from "../../EventListener";
-import ElementBase from '../../Elements/ElementBase';
+import ElementBase from "../../Elements/ElementBase";
 import { Stage } from "../../Elements/Stage";
 import * as elementRenders from "./elementRenders";
 
 export default class CanvasAdapter {
   private elementNode: HTMLElement;
   private canvasNode: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D|null;
+  private ctx: CanvasRenderingContext2D | null;
   private eventListener: CanvasEventsListener;
   private viewOffset = {
     x: 0,
     y: 0
   };
   public antiAliasing: boolean = false;
-  public stage: Stage|null = null;
+  public stage: Stage | null = null;
   private requestRenderId;
 
   /**
@@ -39,7 +39,7 @@ export default class CanvasAdapter {
 
   /**
    * append canvas to htlm element
-   * @param CanvasAdapter 
+   * @param CanvasAdapter
    */
   public appendTo(elementNode: HTMLElement): CanvasAdapter {
     this.elementNode = elementNode;
@@ -48,7 +48,11 @@ export default class CanvasAdapter {
     this.initContext();
     this.autoSize();
     this.stage = new Stage();
-    this.eventListener = new CanvasEventsListener(this.canvasNode, this.stage, this.viewOffset);
+    this.eventListener = new CanvasEventsListener(
+      this.canvasNode,
+      this.stage,
+      this.viewOffset
+    );
     // this.bindEvents();
     return this;
   }
@@ -57,13 +61,13 @@ export default class CanvasAdapter {
    * Bind events to canvas
    */
   // private bindEvents(): void {
-    // EventListener.on("mousemove", (event: Event, element: ElementBase) => {
-    //   this.setCursor(element.cursor);
-    // });
+  // EventListener.on("mousemove", (event: Event, element: ElementBase) => {
+  //   this.setCursor(element.cursor);
+  // });
 
-    // EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
-    //   this.setCursor(element.cursor);
-    // });
+  // EventListener.on("mouseleave", (event: Event, element: ElementBase) => {
+  //   this.setCursor(element.cursor);
+  // });
   // }
 
   /**
@@ -76,8 +80,8 @@ export default class CanvasAdapter {
 
   /**
    * Resize canvas
-   * @param width 
-   * @param height 
+   * @param width
+   * @param height
    */
   public resize(width: number, height: number): CanvasAdapter {
     this.canvasNode.width = width;
@@ -108,6 +112,11 @@ export default class CanvasAdapter {
       throw Error("2D Context is note defined");
     }
 
+    if (element.z !== element.old_z) {
+      element.old_z = element.z;
+      this.stage.sortZIndex();
+    }
+
     if (element.type === "group") {
       return element.children.forEach(this.draw, this);
     }
@@ -115,19 +124,14 @@ export default class CanvasAdapter {
     let x = element.x;
     let y = element.y;
 
-    if (!this.antiAliasing && element.type !== 'circle') {
+    if (!this.antiAliasing && element.type !== "circle") {
       x += 0.5;
       y += 0.5;
     }
 
-    if (element.z !== element.old_z) {
-      this.stage.sortZIndex();
-    }
-
     this.configureCanvas(element);
     elementRenders[element.type](x, y, this.ctx, element);
-  }
-
+  };
 
   /**
    * Set paramenters to canvas
@@ -140,7 +144,7 @@ export default class CanvasAdapter {
     height,
     background,
     borderColor,
-    borderSize, 
+    borderSize,
     cursor,
     parent
   }: any) {
@@ -163,8 +167,8 @@ export default class CanvasAdapter {
 
   public setViewOffset({ x, y }) {
     this.ctx.translate(x - this.viewOffset.x, y - this.viewOffset.y);
-    this.viewOffset.x = x; 
-    this.viewOffset.y = y; 
+    this.viewOffset.x = x;
+    this.viewOffset.y = y;
   }
 
   /**
@@ -175,7 +179,12 @@ export default class CanvasAdapter {
       throw Error("2D Context is note defined");
     }
 
-    this.ctx.clearRect(-this.viewOffset.x, -this.viewOffset.y, this.canvasNode.width, this.canvasNode.height);
+    this.ctx.clearRect(
+      -this.viewOffset.x,
+      -this.viewOffset.y,
+      this.canvasNode.width,
+      this.canvasNode.height
+    );
   }
 
   /**
@@ -183,7 +192,7 @@ export default class CanvasAdapter {
    */
   public render = () => {
     this.stage.children.forEach(this.draw);
-  }
+  };
 
   public clean() {
     this.clear();
@@ -200,7 +209,7 @@ export default class CanvasAdapter {
       this.clear();
       this.render();
     }
-    
+
     this.enableAutoRender();
-  }
+  };
 }

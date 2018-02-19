@@ -7,14 +7,14 @@
     "start": "webpack-dev-server --inline --watch --hot --debug --port 7575"
   },
   "dependencies": {
-    "dat.gui": "^0.6.1",
-    "global": "^4.3.2",
-    "stats.js": "^0.17.0",
-    "ts-loader": "^2.3.1",
-    "typescript": "^2.4.2",
-    "webpack": "^3.3.0"
   },
   "devDependencies": {
+    "global": "^4.3.2",
+    "ts-loader": "^2.3.1",
+    "typescript": "^2.4.2",
+    "webpack": "^3.3.0",
+    "dat.gui": "^0.6.1",
+    "stats.js": "^0.17.0",
     "webpack-dev-server": "^2.8.2"
   }
 }
