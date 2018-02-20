@@ -21,6 +21,7 @@ const getOffsetHandler = (element, handlers) => {
 };
 
 const startDrag = (element, handlers, e) => {
+  console.log(element);
   if (handlers.length) {
     const handlersONCursor = e.elementsOnCursor.filter(e => handlers.indexOf(e) !== -1);
 

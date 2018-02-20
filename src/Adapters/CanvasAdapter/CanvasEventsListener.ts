@@ -102,9 +102,10 @@ class CanvasEventsListener {
 
     if (event.elementsOnCursor.length > 0 && isRoot) {
       target = event.elementsOnCursor[event.elementsOnCursor.length - 1];
+      const sortZ = event.elementsOnCursor.sort((a, b) => a.z > b.z);
 
-      for (let i = event.elementsOnCursor.length - 1; i >= 0; i--) {
-        event.canvasTarget = event.elementsOnCursor[i];
+      for (let i = sortZ.length - 1; i >= 0; i--) {
+        event.canvasTarget = sortZ[i];
         EventListener.fire(eventName, event, event.canvasTarget);
         break;
       }

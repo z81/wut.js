@@ -5,11 +5,10 @@ import animDemo from "./animation";
 import dragableResizableDemo from "./draggable_resiazable";
 import windowDemo from "./window";
 import elementDemo from "./element";
+import zIndexDemo from "./zIndex";
 // import editorDemo from "./editor";
 
-
-const getThisDemoId = () => (parseInt(document.location.hash.substr(1), 10) || 0);
-
+const getThisDemoId = () => parseInt(document.location.hash.substr(1), 10) || 0;
 
 let fps = 30;
 let selectedDemoIdx = getThisDemoId();
@@ -35,10 +34,10 @@ const demos = [
     name: "Element",
     demo: elementDemo
   },
-  // {
-  //   name: "Editor",
-  //   demo: editorDemo
-  // }
+  {
+    name: "zIndex",
+    demo: zIndexDemo
+  }
 ];
 
 let FpsProp = function() {
@@ -50,21 +49,14 @@ const gui = new window["dat"].GUI();
 
 const getDemo = () => demos[selectedDemoIdx].demo;
 
-
 const selectDemo = (idx: number) => {
   document.location.hash = `${idx}`;
 };
 
-
-
-
 const menu = document.getElementById("menu");
 menu.innerHTML = demos
-  .map(
-    ({ name }, idx) => `<button onclick="selectDemo(${idx})">${name}</button>`
-  )
+  .map(({ name }, idx) => `<button onclick="selectDemo(${idx})">${name}</button>`)
   .join("");
-
 
 // STATS
 const stats = new Stats();
@@ -76,10 +68,8 @@ stats.dom.style.bottom = "0";
 document.body.appendChild(stats.dom);
 //
 
-
 // CRATE NODE
-const rootNode: HTMLElement|null = document.getElementById("app");
-
+const rootNode: HTMLElement | null = document.getElementById("app");
 
 // INIT RENDERER
 const renderer = GraphicEngine.init("canvas");
@@ -107,9 +97,9 @@ const init = () => {
   selectedDemoIdx = getThisDemoId();
   getDemo().init(renderer);
   getDemo().props(gui);
-}
+};
 
-window.addEventListener("hashchange", init, false)
+window.addEventListener("hashchange", init, false);
 init();
 
 // tslint:disable
@@ -122,7 +112,6 @@ const createRenderTimer = () =>
 
 let thisRenderTimerIdx = createRenderTimer();
 //requestAnimationFrame(render);
-
 
 gui.add(text, "maxFps", 1, 100).onChange(function(value: number) {
   fps = value;
